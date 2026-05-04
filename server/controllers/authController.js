@@ -14,8 +14,9 @@ const login = async (req, res, next) => {
     }
 
     // Check if user exists
-    const [rows] = await pool.query('SELECT * FROM admins WHERE username = ?', [username]);
-    
+    const result = await pool.query('SELECT * FROM admins WHERE username = $1', [username]);
+    const rows = result.rows;
+
     if (rows.length === 0) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
