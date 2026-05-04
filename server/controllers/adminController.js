@@ -109,7 +109,7 @@ const getStats = async (req, res, next) => {
 
     // 3. Active Products
     const [activeProductsResult] = await pool.query(
-      `SELECT COUNT(id) as count FROM products WHERE is_active = 1`
+      `SELECT COUNT(id) as count FROM products WHERE is_active = true`
     );
     const activeProducts = activeProductsResult[0].count;
 
@@ -331,7 +331,7 @@ const softDeleteProduct = async (req, res, next) => {
   try {
     const productId = req.params.id;
     await pool.query(
-      `UPDATE products SET is_active = 0 WHERE id = ?`,
+      `UPDATE products SET is_active = false WHERE id = ?`,
       [productId]
     );
     res.status(200).json({ success: true, message: 'Product deleted' });
@@ -383,7 +383,7 @@ const updateCategory = async (req, res, next) => {
 const softDeleteCategory = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await pool.query(`UPDATE categories SET is_active = 0 WHERE id = ?`, [id]);
+    await pool.query(`UPDATE categories SET is_active = false WHERE id = ?`, [id]);
     res.status(200).json({ success: true });
   } catch (error) {
     next(error);
@@ -451,7 +451,7 @@ const updateOptionGroup = async (req, res, next) => {
 const softDeleteOptionGroup = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await pool.query(`UPDATE option_groups SET is_active = 0 WHERE id = ?`, [id]);
+    await pool.query(`UPDATE option_groups SET is_active = false WHERE id = ?`, [id]);
     res.status(200).json({ success: true });
   } catch (error) {
     next(error);
@@ -507,7 +507,7 @@ const updateOptionItem = async (req, res, next) => {
 const softDeleteOptionItem = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await pool.query(`UPDATE option_items SET is_active = 0 WHERE id = ?`, [id]);
+    await pool.query(`UPDATE option_items SET is_active = false WHERE id = ?`, [id]);
     res.status(200).json({ success: true });
   } catch (error) {
     next(error);

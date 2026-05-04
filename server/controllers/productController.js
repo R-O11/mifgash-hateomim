@@ -9,7 +9,7 @@ const getProducts = async (req, res, next) => {
       `SELECT id, category_id, name_he, name_ar, description_he, description_ar, 
               base_price, image_url, prep_time_minutes, is_recommended 
        FROM products 
-       WHERE is_active = 1 AND is_available = 1`
+       WHERE is_active = true AND is_available = true`
     );
     res.status(200).json({ success: true, data: rows });
   } catch (error) {
@@ -28,7 +28,7 @@ const getProductDetails = async (req, res, next) => {
       `SELECT id, category_id, name_he, name_ar, description_he, description_ar, 
               base_price, image_url, prep_time_minutes, is_available 
        FROM products 
-       WHERE id = ? AND is_active = 1`,
+       WHERE id = ? AND is_active = true`,
       [productId]
     );
 
@@ -42,7 +42,7 @@ const getProductDetails = async (req, res, next) => {
     const [groupRows] = await pool.query(
       `SELECT id, name_he, name_ar, selection_type, is_required, min_select, max_select, sort_order 
        FROM option_groups 
-       WHERE product_id = ? AND is_active = 1 
+       WHERE product_id = ? AND is_active = true 
        ORDER BY sort_order ASC`,
       [productId]
     );
@@ -59,7 +59,7 @@ const getProductDetails = async (req, res, next) => {
     const [itemRows] = await pool.query(
       `SELECT id, group_id, name_he, name_ar, price_change, sort_order 
        FROM option_items 
-       WHERE group_id IN (?) AND is_active = 1 
+       WHERE group_id IN (?) AND is_active = true 
        ORDER BY sort_order ASC`,
       [groupIds]
     );

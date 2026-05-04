@@ -66,7 +66,7 @@ class OrderService {
         // Fetch product
         const [prodRows] = await connection.query(
           `SELECT id, name_he, name_ar, base_price, is_available 
-           FROM products WHERE id = ? AND is_active = 1`,
+           FROM products WHERE id = ? AND is_active = true`,
           [item.productId]
         );
 
@@ -90,7 +90,7 @@ class OrderService {
         // Fetch ALL groups for this product ahead of validation
         const [groupRows] = await connection.query(
           `SELECT id, name_he, name_ar, min_select, max_select, is_required
-           FROM option_groups WHERE product_id = ? AND is_active = 1`,
+           FROM option_groups WHERE product_id = ? AND is_active = true`,
           [product.id]
         );
 
@@ -105,7 +105,7 @@ class OrderService {
           for (const opt of item.options) {
             const [itemRows] = await connection.query(
               `SELECT id, group_id, name_he, name_ar, price_change 
-               FROM option_items WHERE id = ? AND is_active = 1`,
+               FROM option_items WHERE id = ? AND is_active = true`,
               [opt.itemId]
             );
 
