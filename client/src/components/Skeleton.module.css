@@ -1,0 +1,179 @@
+/* Shimmer Base */
+.shimmer {
+  background: #1c1c1c;
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #2a2a2a 50%,
+    transparent 100%
+  );
+  animation: sweep 1.4s infinite linear;
+  transform: translateX(-100%);
+}
+
+:global(.dir-rtl) .shimmer::after {
+  animation: sweep-rtl 1.4s infinite linear;
+  transform: translateX(100%);
+}
+
+@keyframes sweep {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes sweep-rtl {
+  100% { transform: translateX(-100%); }
+}
+
+/* Utils */
+.mb2 { margin-bottom: 8px; }
+.mb3 { margin-bottom: 12px; }
+.flex1 { flex: 1; }
+
+/* ── Standard Card ── */
+.card {
+  background: #1c1c1c;
+  border-radius: 16px;
+  border: 1px solid #2a2a2a;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.imgWrap {
+  height: 140px;
+  background: #222222;
+  border-radius: 12px 12px 0 0;
+}
+
+.btnPlaceholder {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(201, 168, 76, 0.15);
+  z-index: 2;
+}
+
+.body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+}
+
+.footer {
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid #2a2a2a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ── Featured Card ── */
+.featured {
+  display: flex;
+  flex-direction: row-reverse;
+  height: 140px;
+  background: #1c1c1c;
+  border-radius: 16px;
+  border: 1px solid #2a2a2a;
+  overflow: hidden;
+  width: 320px;
+  position: relative;
+}
+
+.featImgWrap {
+  width: 140px;
+  flex-shrink: 0;
+  background: #222222;
+}
+
+.featBody {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.featFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.featBtnPlaceholder {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(201, 168, 76, 0.15);
+}
+
+/* ── Category Scroll ── */
+.category {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 68px;
+}
+
+.catIcon {
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  background: #1c1c1c;
+}
+
+/* ── Hero Banner ── */
+.hero {
+  width: 100%;
+  height: 180px;
+  border-radius: 20px;
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  background: #1c1c1c;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.heroContent {
+  flex: 1;
+  padding: 1.5rem;
+  z-index: 2;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, #2a2a2a 50%, transparent 100%);
+  animation: sweep 1.4s infinite linear;
+  transform: translateX(-100%);
+}
+
+:global(.dir-rtl) .hero::after {
+  animation: sweep-rtl 1.4s infinite linear;
+  transform: translateX(100%);
+}

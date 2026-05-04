@@ -1,0 +1,162 @@
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  direction: rtl;
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .pageHeader {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.pageTitle {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.primaryBtn {
+  background-color: #1e293b;
+  color: #ffffff;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.primaryBtn:hover {
+  background-color: #0f172a;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.searchBar {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: #f8fafc;
+}
+
+.searchInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  color: #0f172a;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  text-align: right;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.tableHeadRow {
+  background-color: #f8fafc;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tableHeadCell {
+  padding: 1rem;
+  font-weight: 700;
+}
+
+.tableBodyRow {
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.tableBodyRow:hover {
+  background-color: #f8fafc;
+}
+
+.tableCell {
+  padding: 1rem;
+}
+
+.deletedRow {
+  opacity: 0.5;
+  filter: grayscale(1);
+}
+
+.iconBtn {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: colors 0.2s;
+  display: inline-flex;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.iconBtnInfo {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+.iconBtnInfo:hover { background-color: #dbeafe; }
+
+.iconBtnDanger {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+.iconBtnDanger:hover { background-color: #fee2e2; }
+
+.badgeInfo {
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background-color: #eff6ff;
+  color: #2563eb;
+  display: inline-block;
+}
+
+.badgeDanger {
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background-color: #fef2f2;
+  color: #dc2626;
+  display: inline-block;
+}

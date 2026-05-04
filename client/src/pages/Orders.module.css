@@ -1,0 +1,234 @@
+.page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 24px 16px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 32rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.pageHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 0 8px;
+  gap: 10px;
+}
+
+.iconRing {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.2), rgba(201, 168, 76, 0.05));
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerIcon {
+  color: var(--gold);
+}
+
+.pageTitle {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.pageSub {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin: 0;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionSubtitle {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+  opacity: 0.9;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.05);
+  margin: 4px 0;
+}
+
+/* ── Order Tracker ── */
+.trackerWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.trackerInputWrap {
+  display: flex;
+  gap: 8px;
+}
+
+.trackerInput {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  direction: ltr; /* Order numbers are usually english chars */
+}
+
+.trackerInput:focus {
+  border-color: var(--gold);
+}
+
+.trackerBtn {
+  background: var(--gold);
+  color: #111;
+  border: none;
+  border-radius: 12px;
+  padding: 0 16px;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.trackerBtn:hover {
+  opacity: 0.9;
+}
+
+.trackerBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.trackerResult {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.trackerError {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  color: #f87171;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.resultTitle {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.resultDate {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.statusIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  margin-top: 4px;
+}
+
+.statusDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 10px var(--gold);
+}
+
+.statusText {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.recentOrdersList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recentOrderCard {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.recentOrderCard:hover {
+  border-color: rgba(201, 168, 76, 0.3);
+  background: rgba(201, 168, 76, 0.05);
+}
+
+.roId {
+  font-family: monospace;
+  font-size: 13px;
+  color: #ddd;
+  font-weight: 600;
+}
+
+.roDate {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+@media (min-width: 640px) {
+  .page {
+    padding: 32px 24px 120px;
+  }
+}

@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&family=Rubik:wght@400;500;600;700;800;900&family=Heebo:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ── Menu Mode Luxury Palette ── */
+    --bg:          #0B0B0B;
+    --card:        #141414;
+    --card-soft:   #171717;
+    --gold:        #C89B3C;
+    --gold-light:  #E3C16F;
+    --gold-dark:   #a07830;
+    --gold-glow:   rgba(200, 155, 60, 0.45);
+    --gold-subtle: rgba(200, 155, 60, 0.10);
+    --text:        #FFFFFF;
+    --muted:       #A1A1A1;
+    --border-gold: rgba(200, 155, 60, 0.25);
+
+    /* ── Legacy aliases ── */
+    --bg-deep:     #0B0B0B;
+    --bg-primary:  #0B0B0B;
+    --bg-card:     #141414;
+    --bg-elevated: #1e1e28;
+    --bg-input:    #1a1a24;
+    --glass-bg:    rgba(11, 11, 11, 0.88);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-blur:  24px;
+    --text-primary:   #FFFFFF;
+    --text-secondary: #c8c8d0;
+    --text-muted:     #A1A1A1;
+    --text-dim:       #5a5a68;
+    --green:       #34d399;
+    --red:         #f87171;
+
+    /* ── Radius ── */
+    --radius-sm:  8px;
+    --radius-md:  12px;
+    --radius-lg:  16px;
+    --radius-xl:  22px;
+    --radius-2xl: 28px;
+
+    /* ── Transitions ── */
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased;
+    font-family: 'Inter', 'Heebo', 'Segoe UI', Tahoma, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  .dir-rtl {
+    direction: rtl;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', 'Inter', sans-serif;
+  }
+}
+
+@layer utilities {
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* ═══════════════════════════════════════
+   GLOBAL KEYFRAMES
+   ═══════════════════════════════════════ */
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes cardEntrance {
+  from { opacity: 0; transform: translateY(24px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes heartPop {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.35); }
+  60%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200, 155, 60, 0.4); }
+  50%      { box-shadow: 0 0 0 8px rgba(200, 155, 60, 0); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes ping {
+  75%, 100% { transform: scale(2.5); opacity: 0; }
+}
+@keyframes navSlideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+@keyframes confettiBurst {
+  0%   { transform: scale(0) rotate(0deg); opacity: 0; }
+  50%  { transform: scale(1.2) rotate(180deg); opacity: 1; }
+  100% { transform: scale(1) rotate(360deg); opacity: 1; }
+}
+@keyframes floatGlow {
+  0%, 100% { box-shadow: 0 4px 20px rgba(200,155,60,0.3), 0 0 40px rgba(200,155,60,0.1); }
+  50%      { box-shadow: 0 4px 28px rgba(200,155,60,0.5), 0 0 60px rgba(200,155,60,0.2); }
+}
+
+.animate-slideUp { animation: slideUp 0.4s var(--ease-smooth) forwards; }
+.animate-fadeIn  { animation: fadeIn 0.3s ease-out forwards; }
+.animate-scaleIn { animation: scaleIn 0.3s var(--ease-smooth) forwards; }

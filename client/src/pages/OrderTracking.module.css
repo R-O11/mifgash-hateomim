@@ -1,0 +1,218 @@
+.page {
+  min-height: 100vh;
+  background-color: var(--dark-bg);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  height: 80px;
+}
+
+.backBtn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+}
+
+.headerTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.orderMetaInfo {
+  text-align: center;
+  margin-bottom: 50px;
+  margin-top: 20px;
+}
+
+.orderNumberLabel {
+  font-size: 0.95rem;
+  color: #aaa;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.orderNumberVal {
+  font-size: 3rem;
+  font-weight: 800;
+  margin: 0;
+  background: linear-gradient(135deg, var(--gold), #f9d976);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.totalAmt {
+  font-size: 1.2rem;
+  color: #ccc;
+  margin-top: 12px;
+}
+
+.stepperWrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto 40px;
+}
+
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 90px;
+}
+
+.stepCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  border: 2px solid rgba(255,255,255,0.1);
+  transition: all 0.4s ease;
+  z-index: 2;
+}
+
+.stepLabel {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: #888;
+  font-weight: 500;
+  text-align: center;
+  transition: color 0.4s ease;
+}
+
+.stepLine {
+  flex: 1;
+  height: 2px;
+  background: rgba(255,255,255,0.1);
+  margin-top: 24px;
+  position: relative;
+  z-index: 1;
+  margin-left: -10px;
+  margin-right: -10px;
+  transition: background 0.4s ease;
+}
+
+.stepCompleted .stepCircle {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #1a1a1a;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+.stepCompleted .stepLabel {
+  color: var(--gold);
+}
+
+.lineCompleted {
+  background: var(--gold);
+}
+
+.updatingToast {
+  position: absolute;
+  bottom: -20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pulseDot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--gold);
+  border-radius: 50%;
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; box-shadow: none; }
+  100% { opacity: 1; box-shadow: 0 0 8px var(--gold); }
+}
+
+.bottomBtnWrap {
+  padding: 20px;
+  padding-bottom: 40px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.homeBtnBig {
+  width: 100%;
+  padding: 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.homeBtnBig:active {
+  background: rgba(255,255,255,0.1);
+}
+
+.loadingWrap, .errorWrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  min-height: 100vh;
+  background-color: var(--dark-bg);
+}
+
+.homeBtn {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gold);
+  color: #1a1a1a;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}

@@ -1,0 +1,77 @@
+const pool = require('../config/db');
+
+class BusinessService {
+  async getBusinessStatus() {
+    try {
+      // 1. Get fundamental business settings
+      const [settingsRows] = await pool.query(
+        'SELECT manual_override_mode, delivery_enabled, pickup_enabled, menu_mode, hero_image_url, hero_badge_he, hero_badge_ar, hero_title_he, hero_title_ar, hero_desc_he, hero_desc_ar FROM business_settings LIMIT 1'
+      );
+
+      if (settingsRows.length === 0) {
+        return { isOpen: true, error: 'No settings found' }; // Fail-safe fallback
+      }
+
+      const settings = settingsRows[0];
+
+      // Manual overides
+      if (settings.manual_override_mode === 'force_open') {
+        return { isOpen: true, mode: 'force_open', ...settings };
+      }
+      if (settings.manual_override_mode === 'force_closed') {
+        return { isOpen: false, mode: 'force_closed', ...settings };
+      }
+
+      // 2. Check special closures for today
+      // note: using CURRENT_DATE ensures timezone matching database, usually fine
+      const [closureRows] = await pool.query(
+        'SELECT * FROM special_closures WHERE special_date = CURRENT_DATE()'
+      );
+
+      if (closureRows.length > 0) {
+        const closure = closureRows[0];
+        if (closure.is_closed) {
+           return { isOpen: false, mode: 'special_closure', ...settings };
+        }
+        
+        // If it's a special open duration
+        if (closure.open_time && closure.close_time) {
+           const [timeCheck] = await pool.query(
+             'SELECT CURRENT_TIME() BETWEEN ? AND ? AS isOpenNow', 
+             [closure.open_time, closure.close_time]
+           );
+           return { isOpen: !!timeCheck[0].isOpenNow, mode: 'special_hours', ...settings };
+        }
+      }
+
+      // 3. Fallback to regular hours, DAYOFWEEK returns 1=Sunday...7=Saturday in MySQL
+      const [hoursRows] = await pool.query(
+        `SELECT is_open, open_time, close_time, CURRENT_TIME() AS current_time_db 
+         FROM business_hours 
+         WHERE day_of_week = DAYOFWEEK(CURRENT_DATE()) - 1`
+      );
+
+      if (hoursRows.length === 0 || !hoursRows[0].is_open) {
+        return { isOpen: false, mode: 'regular_closed_day', ...settings };
+      }
+
+      const hours = hoursRows[0];
+      const dbTimeStr = hours.current_time_db; 
+
+      // Safely check if time is within open_time and close_time
+      const [isOpenCheck] = await pool.query(
+         'SELECT CURRENT_TIME() BETWEEN ? AND ? AS isWithinLimits',
+         [hours.open_time, hours.close_time]
+      );
+      
+      const isOpen = !!isOpenCheck[0].isWithinLimits;
+
+      return { isOpen, mode: 'regular_hours', ...settings };
+    } catch (error) {
+      console.error('Error fetching business status:', error);
+      return { isOpen: false, error: 'Internal Server Error Check' };
+    }
+  }
+}
+
+module.exports = new BusinessService();
