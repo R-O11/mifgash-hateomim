@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../api/axios';
+import api from '../api/axios';
 import { Power, Clock, Loader2, TrendingUp, ShoppingBag, Utensils, Zap, Monitor, BookOpen } from 'lucide-react';
 import AdminHeroConfig from './AdminHeroConfig';
 import s from './AdminDashboard.module.css';
@@ -41,12 +41,13 @@ const AdminDashboard = () => {
   const fetchSettings = async () => {
     try {
       const [settingsRes, statsRes] = await Promise.all([
-        api.getAdminSettings(),
-        api.getAdminStats()
+        api.get('/api/admin/settings'),
+        api.get('/api/admin/stats')
       ]);
-      setMode(settingsRes.data.manual_override_mode);
-      setMenuMode(!!settingsRes.data.menu_mode);
-      setStats(statsRes.data);
+      const settingsData = settingsRes.data?.data || settingsRes.data;
+      setMode(settingsData.manual_override_mode);
+      setMenuMode(!!settingsData.menu_mode);
+      setStats(statsRes.data?.data || statsRes.data);
     } catch (error) { console.error(error); }
     finally { setLoading(false); }
   };
@@ -54,7 +55,7 @@ const AdminDashboard = () => {
   const handleModeChange = async (newMode) => {
     setChanging(true);
     try {
-      await api.updateAdminSettings(newMode);
+      await api.patch('/api/admin/settings/manual-override', { mode: newMode });
       setMode(newMode);
     } catch (error) {
       console.error('Failed to update mode', error);
@@ -65,7 +66,7 @@ const AdminDashboard = () => {
   const handleMenuModeChange = async (newMenuMode) => {
     setChangingMenuMode(true);
     try {
-      await api.updateMenuMode(newMenuMode);
+      await api.patch('/api/admin/settings/menu-mode', { menu_mode: newMenuMode });
       setMenuMode(newMenuMode);
     } catch (error) {
       console.error('Failed to update menu mode', error);

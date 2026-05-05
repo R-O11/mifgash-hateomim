@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { api } from '../api/axios';
+import api from '../api/axios';
 import { ChevronRight, ChevronLeft, Check, ChefHat, Bike, Receipt, Home } from 'lucide-react';
 import s from './OrderTracking.module.css';
 
@@ -40,9 +40,10 @@ const OrderTracking = () => {
   const fetchOrder = async (isPolling = false) => {
     try {
       if (isPolling) setIsUpdating(true);
-      const res = await api.trackOrder(orderNumber);
-      if (res.success && res.data) {
-        const currentData = res.data;
+      const res = await api.get('/api/orders/track/' + orderNumber);
+      const resData = res.data;
+      if (resData.success && resData.data) {
+        const currentData = resData.data;
         setOrderData(currentData);
         
         const currentStatus = getNormalizedStatus(currentData.order_status);

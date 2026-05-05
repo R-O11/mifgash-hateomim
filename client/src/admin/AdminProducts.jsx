@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../api/axios';
+import api from '../api/axios';
 import { Loader2, Plus, Edit, Trash2, ToggleLeft, ToggleRight, Search, Activity, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import shared from './AdminShared.module.css';
@@ -17,8 +17,8 @@ const AdminProducts = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await api.getAdminProducts();
-      setProducts(res.data);
+      const res = await api.get('/api/admin/products');
+      setProducts(res.data?.data || res.data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -29,7 +29,7 @@ const AdminProducts = () => {
   const handleToggle = async (id, currentStatus) => {
     try {
       const newStatus = currentStatus === 1 ? 0 : 1;
-      await api.toggleProductAvailability(id, newStatus);
+      await api.patch('/api/admin/products/' + id + '/toggle', { is_available: newStatus });
       setProducts(prev => prev.map(p => p.id === id ? { ...p, is_available: newStatus } : p));
     } catch (error) {
       console.error(error);
@@ -40,7 +40,7 @@ const AdminProducts = () => {
   const handleRecommendToggle = async (id, currentRec) => {
     try {
       const newRec = currentRec === 1 ? 0 : 1;
-      await api.toggleProductRecommendation(id, newRec);
+      await api.patch('/api/admin/products/' + id + '/recommend', { is_recommended: newRec });
       setProducts(prev => prev.map(p => p.id === id ? { ...p, is_recommended: newRec } : p));
     } catch (error) {
       console.error(error);
@@ -51,7 +51,7 @@ const AdminProducts = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('האם אתה בטוח שברצונך למחוק מוצר זה?')) return;
     try {
-      await api.softDeleteProduct(id);
+      await api.delete('/api/admin/products/' + id);
       setProducts(prev => prev.map(p => p.id === id ? { ...p, is_active: 0 } : p));
     } catch (error) {
        console.error(error);
@@ -116,7 +116,7 @@ const AdminProducts = () => {
                   <tr key={product.id} className={`${shared.tableBodyRow} ${isDeleted ? shared.deletedRow : ''}`}>
                     <td className={shared.tableCell}>
                       {product.image_url ? (
-                        <img src={`http://${window.location.hostname}:5000${product.image_url}?v=${product.updated_at || Date.now()}`} alt={product.name_he} className={s.imgCell} />
+                        <img src={`${import.meta.env.VITE_API_URL}${product.image_url}?v=${product.updated_at || Date.now()}`} alt={product.name_he} className={s.imgCell} />
                       ) : (
                         <div className={s.imgPlaceholder}>אין</div>
                       )}

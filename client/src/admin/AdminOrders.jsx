@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../api/axios';
+import api from '../api/axios';
 import { Loader2, ChevronDown, ChevronUp, PackageOpen } from 'lucide-react';
 import shared from './AdminShared.module.css';
 import s from './AdminOrders.module.css';
@@ -26,8 +26,8 @@ const AdminOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await api.getAdminOrders();
-      setOrders(res.data);
+      const res = await api.get('/api/admin/orders');
+      setOrders(res.data?.data || res.data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -37,7 +37,7 @@ const AdminOrders = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      await api.updateOrderStatus(orderId, newStatus);
+      await api.patch('/api/admin/orders/' + orderId + '/status', { status: newStatus });
       setOrders(prev => prev.map(o => o.id === orderId ? { ...o, order_status: newStatus } : o));
     } catch (error) {
        console.error(error);

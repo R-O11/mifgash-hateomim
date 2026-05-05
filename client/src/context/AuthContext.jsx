@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { api } from '../api/axios';
+import api from '../api/axios';
 
 const AuthContext = createContext();
 
@@ -33,11 +33,12 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (username, password) => {
-    const res = await api.adminLogin({ username, password });
-    if (res.success && res.data.token) {
-      setUser({ id: res.data.id, username: res.data.username });
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('adminUser', JSON.stringify({ id: res.data.id, username: res.data.username }));
+    const res = await api.post('/api/auth/login', { username, password });
+    const resData = res.data;
+    if (resData.success && resData.data.token) {
+      setUser({ id: resData.data.id, username: resData.data.username });
+      localStorage.setItem('token', resData.data.token);
+      localStorage.setItem('adminUser', JSON.stringify({ id: resData.data.id, username: resData.data.username }));
       return true;
     }
     return false;

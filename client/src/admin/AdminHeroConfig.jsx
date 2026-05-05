@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../api/axios';
+import api from '../api/axios';
 import { Image as ImageIcon, Loader2, Save } from 'lucide-react';
 import s from './AdminHeroConfig.module.css';
 
@@ -24,18 +24,20 @@ const AdminHeroConfig = () => {
 
   const fetchSettings = async () => {
     try {
-      const res = await api.getAdminSettings();
-      if (res.data) {
+      const res = await api.get('/api/admin/settings');
+      const resData = res.data;
+      if (resData.data) {
+        const data = resData.data;
         setFormData({
-          hero_badge_he: res.data.hero_badge_he || '',
-          hero_badge_ar: res.data.hero_badge_ar || '',
-          hero_title_he: res.data.hero_title_he || '',
-          hero_title_ar: res.data.hero_title_ar || '',
-          hero_desc_he: res.data.hero_desc_he || '',
-          hero_desc_ar: res.data.hero_desc_ar || ''
+          hero_badge_he: data.hero_badge_he || '',
+          hero_badge_ar: data.hero_badge_ar || '',
+          hero_title_he: data.hero_title_he || '',
+          hero_title_ar: data.hero_title_ar || '',
+          hero_desc_he: data.hero_desc_he || '',
+          hero_desc_ar: data.hero_desc_ar || ''
         });
-        if (res.data.hero_image_url) {
-          setPreview(`http://${window.location.hostname}:5000${res.data.hero_image_url}`);
+        if (data.hero_image_url) {
+          setPreview(`${import.meta.env.VITE_API_URL}${data.hero_image_url}`);
         }
       }
     } catch (error) {
@@ -69,10 +71,11 @@ const AdminHeroConfig = () => {
         fd.append('hero_image', imageFile);
       }
       
-      const res = await api.updateHeroSettings(fd);
+      const res = await api.patch('/api/admin/settings/hero', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+      const resData = res.data;
       alert('הגדרות מתחב עודכנו בהצלחה!');
-      if (res.hero_image_url) {
-        setPreview(`http://${window.location.hostname}:5000${res.hero_image_url}`);
+      if (resData.hero_image_url) {
+        setPreview(`${import.meta.env.VITE_API_URL}${resData.hero_image_url}`);
       }
     } catch (err) {
       console.error(err);

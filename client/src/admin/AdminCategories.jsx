@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../api/axios';
+import api from '../api/axios';
 import { Loader2, Plus, Edit, Trash2, Tags, Save, X } from 'lucide-react';
 import shared from './AdminShared.module.css';
 import s from './AdminCategories.module.css';
@@ -19,8 +19,8 @@ const AdminCategories = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await api.getAdminCategories();
-      setCategories(res.data);
+      const res = await api.get('/api/admin/categories');
+      setCategories(res.data?.data || res.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -53,9 +53,9 @@ const AdminCategories = () => {
     try {
       const payload = { ...formData };
       if (isEditing === 'new') {
-        await api.createCategory(payload);
+        await api.post('/api/admin/categories', payload);
       } else {
-        await api.updateCategory(isEditing, payload);
+        await api.put('/api/admin/categories/' + isEditing, payload);
       }
       setIsEditing(null);
       fetchCategories();
@@ -69,7 +69,7 @@ const AdminCategories = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("למחוק קטגוריה זו? זה יסתיר אותה מהתפריט.")) return;
     try {
-      await api.softDeleteCategory(id);
+      await api.delete('/api/admin/categories/' + id);
       setCategories(prev => prev.map(c => c.id === id ? { ...c, is_active: 0 } : c));
     } catch (err) {
       alert("שגיאה במחיקה");

@@ -4,7 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useMenuMode } from '../context/MenuModeContext';
-import { api } from '../api/axios';
+import api from '../api/axios';
 import s from './ProductModal.module.css';
 
 const PHONE_NUMBER = '0501234567';
@@ -27,11 +27,12 @@ const ProductModal = ({ productId, onClose }) => {
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    api.getProductDetails(productId)
+    api.get('/api/products/' + productId)
       .then(res => {
-        setProduct(res.data);
+        const resData = res.data;
+        setProduct(resData.data);
         const initSel = {};
-        (res.data.option_groups || []).forEach(g => { initSel[g.id] = []; });
+        (resData.data.option_groups || []).forEach(g => { initSel[g.id] = []; });
         setSelections(initSel);
       })
       .catch(err => {
@@ -113,7 +114,7 @@ const ProductModal = ({ productId, onClose }) => {
   if (!product) return null;
 
   const imgSrc = product.image_url
-    ? `http://${window.location.hostname}:5000${product.image_url}?v=${product.updated_at || Date.now()}`
+    ? `${import.meta.env.VITE_API_URL}${product.image_url}?v=${product.updated_at || Date.now()}`
     : 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&q=80&w=800';
 
   const favorited = isFavorite(productId);

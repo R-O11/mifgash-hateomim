@@ -7,7 +7,7 @@ const FALLBACK = 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto
 
 const getImgSrc = (product) =>
   product.image_url
-    ? `http://${window.location.hostname}:5000${product.image_url}?v=${product.updated_at || Date.now()}`
+    ? `${import.meta.env.VITE_API_URL}${product.image_url}?v=${product.updated_at || Date.now()}`
     : FALLBACK;
 
 const ProductCard = ({ product, onOpenModal, isCompact = false, isFeatured = false }) => {

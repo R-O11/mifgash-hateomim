@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../api/axios';
+import api from '../api/axios';
 import { ArrowRight, ArrowLeft, CheckCircle, CreditCard, Banknote, Smartphone } from 'lucide-react';
 import s from './Checkout.module.css';
 
@@ -22,7 +22,7 @@ const Checkout = () => {
 
   useEffect(() => {
     if (cartItems.length === 0) navigate('/');
-    api.getBusinessStatus().then(res => setIsOpenCheck(res.data.isOpen));
+    api.get('/api/business-status').then(res => setIsOpenCheck(res.data.isOpen));
   }, [cartItems.length, navigate]);
 
   const handleBlur = (field) => {
@@ -73,23 +73,24 @@ const Checkout = () => {
     };
 
     try {
-      const res = await api.submitOrder(payload);
-      if (res.success) {
+      const res = await api.post('/api/orders', payload);
+      const resData = res.data;
+      if (resData.success) {
         clearCart();
         setIsSuccess(true);
         
         // Save to recent orders for tracking
         try {
           const recent = JSON.parse(localStorage.getItem('recentOrders') || '[]');
-          if (!recent.some(o => o.orderNumber === res.data.orderNumber)) {
-             recent.unshift({ orderNumber: res.data.orderNumber, timestamp: new Date().toISOString() });
+          if (!recent.some(o => o.orderNumber === resData.data.orderNumber)) {
+             recent.unshift({ orderNumber: resData.data.orderNumber, timestamp: new Date().toISOString() });
              // Keep only last 5
              localStorage.setItem('recentOrders', JSON.stringify(recent.slice(0, 5)));
           }
         } catch(e) {}
 
         setTimeout(() => {
-          navigate('/orders/' + res.data.orderNumber);
+          navigate('/orders/' + resData.data.orderNumber);
         }, 1200);
       }
     } catch (err) {

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { api } from '../api/axios';
+import api from '../api/axios';
 
 const MenuModeContext = createContext();
 
@@ -11,8 +11,8 @@ export const MenuModeProvider = ({ children }) => {
   useEffect(() => {
     const fetchMenuMode = async () => {
       try {
-        const res = await api.getBusinessStatus();
-        const data = res.data || res;
+        const res = await api.get('/api/business-status');
+        const data = res.data?.data || res.data || {};
         // menu_mode: 1 = menu only, 0 = full ordering
         setMenuMode(!!data.menu_mode);
       } catch (err) {

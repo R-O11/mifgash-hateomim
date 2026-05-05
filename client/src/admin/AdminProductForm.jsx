@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import { api } from '../api/axios';
+import api from '../api/axios';
 import { ArrowRight, Image as ImageIcon, Loader2, Plus, Trash2, GripVertical } from 'lucide-react';
 import s from './AdminProductForm.module.css';
 
@@ -41,14 +41,14 @@ const AdminProductForm = () => {
   useEffect(() => {
     const init = async () => {
       try {
-        const catRes = await api.getCategories();
-        setCategories(catRes.data);
+        const catRes = await api.get('/api/categories');
+        setCategories(catRes.data?.data || catRes.data);
 
         if (isEdit) {
           let p = preloadedProduct;
           if (!p) {
-             const res = await api.getProductDetails(id);
-             p = res.data;
+             const res = await api.get('/api/products/' + id);
+             p = res.data?.data || res.data;
           }
           setFormData({
             name_he: p.name_he || '',
@@ -62,20 +62,22 @@ const AdminProductForm = () => {
             is_recommended: p.is_recommended?.toString() || '0'
           });
           if (p.image_url) {
-            setImagePreview(`http://${window.location.hostname}:5000${p.image_url}?v=${p.updated_at || Date.now()}`);
+            setImagePreview(`${import.meta.env.VITE_API_URL}${p.image_url}?v=${p.updated_at || Date.now()}`);
           }
 
           // Fetch options
           const [groupsRes, itemsRes] = await Promise.all([
-             api.getAdminOptionGroups().catch(() => ({data:[]})),
-             api.getAdminOptionItems().catch(() => ({data:[]}))
+             api.get('/api/admin/option-groups').catch(() => ({data:[]})),
+             api.get('/api/admin/option-items').catch(() => ({data:[]}))
           ]);
 
-          const productGroups = groupsRes.data.filter(g => g.product_id === parseInt(id) && g.is_active === 1);
+          const gData = groupsRes.data?.data || groupsRes.data || [];
+          const iData = itemsRes.data?.data || itemsRes.data || [];
+          const productGroups = gData.filter(g => g.product_id === parseInt(id) && g.is_active === 1);
           const formattedGroups = productGroups.map(g => ({
              ...g,
              is_required: Boolean(g.is_required),
-             items: itemsRes.data.filter(i => i.group_id === g.id && i.is_active === 1).sort((a,b) => a.sort_order - b.sort_order)
+             items: iData.filter(i => i.group_id === g.id && i.is_active === 1).sort((a,b) => a.sort_order - b.sort_order)
           })).sort((a,b) => a.sort_order - b.sort_order);
 
           setOptionGroups(formattedGroups);
@@ -180,15 +182,15 @@ const AdminProductForm = () => {
       let currentProductId = id;
 
       if (isEdit) {
-        await api.updateProduct(currentProductId, payload);
+        await api.put('/api/admin/products/' + currentProductId, payload);
       } else {
-        const res = await api.createProduct(payload);
-        currentProductId = res.id;
+        const res = await api.post('/api/admin/products', payload);
+        currentProductId = res.data?.id || res.data;
       }
 
       // Handle Option Deletions
-      for (const dId of deletedGroups) await api.softDeleteOptionGroup(dId).catch(console.error);
-      for (const dId of deletedItems) await api.softDeleteOptionItem(dId).catch(console.error);
+      for (const dId of deletedGroups) await api.delete('/api/admin/option-groups/' + dId).catch(console.error);
+      for (const dId of deletedItems) await api.delete('/api/admin/option-items/' + dId).catch(console.error);
 
       // Save Groups and Items
       for (let gIdx = 0; gIdx < optionGroups.length; gIdx++) {
@@ -208,10 +210,10 @@ const AdminProductForm = () => {
         let savedGroupId = group.id;
 
         if (savedGroupId) {
-          await api.updateOptionGroup(savedGroupId, groupPayload);
+          await api.put('/api/admin/option-groups/' + savedGroupId, groupPayload);
         } else {
-          const res = await api.createOptionGroup(groupPayload);
-          savedGroupId = res.id;
+          const res = await api.post('/api/admin/option-groups', groupPayload);
+          savedGroupId = res.data?.id || res.data;
         }
 
         for (let iIdx = 0; iIdx < group.items.length; iIdx++) {
@@ -226,9 +228,9 @@ const AdminProductForm = () => {
           };
 
           if (item.id) {
-            await api.updateOptionItem(item.id, itemPayload);
+            await api.put('/api/admin/option-items/' + item.id, itemPayload);
           } else {
-            await api.createOptionItem(itemPayload);
+            await api.post('/api/admin/option-items', itemPayload);
           }
         }
       }

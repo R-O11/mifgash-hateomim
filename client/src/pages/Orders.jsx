@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, ChevronLeft, Package } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { api } from '../api/axios';
+import api from '../api/axios';
 import s from './Orders.module.css';
 
 const Orders = () => {
@@ -26,9 +26,10 @@ const Orders = () => {
     setTrackError('');
     setTrackResult(null);
     try {
-      const res = await api.trackOrder(orderNum);
-      if (res.success) {
-        setTrackResult(res.data);
+      const res = await api.get('/api/orders/track/' + orderNum);
+      const resData = res.data;
+      if (resData.success) {
+        setTrackResult(resData.data);
       }
     } catch (err) {
       setTrackError(lang === 'he' ? 'הזמנה לא נמצאה או שגיאה בשרת' : 'الطلب غير موجود أو حدث خطأ');

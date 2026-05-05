@@ -4,7 +4,7 @@ import {
   MapPin, Clock, Phone, MessageCircle, Plus, Heart, Navigation
 } from 'lucide-react';
 import s from './Home.module.css';
-import { api } from '../api/axios';
+import api from '../api/axios';
 import logoImg from '../assets/logo-tawam-transparent.png';
 import { useFavorites } from '../context/FavoritesContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -61,13 +61,13 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const [statusRes, catRes, prodRes] = await Promise.all([
-          api.getBusinessStatus().catch(() => ({ data: { isOpen: true } })),
-          api.getCategories().catch(() => []),
-          api.getProducts().catch(() => [])
+          api.get('/api/business-status').catch(() => ({ data: { isOpen: true } })),
+          api.get('/api/categories').catch(() => ({ data: [] })),
+          api.get(`/api/products?t=${Date.now()}`).catch(() => ({ data: [] }))
         ]);
-        const products = Array.isArray(prodRes) ? prodRes : (prodRes.data || []);
-        const categories = Array.isArray(catRes) ? catRes : (catRes.data || []);
-        const statusData = statusRes.data || statusRes || {};
+        const products = prodRes.data || [];
+        const categories = catRes.data || [];
+        const statusData = statusRes.data || {};
         const recommendedProducts = products.filter(p => !!p.is_recommended).slice(0, 4);
         setData({
           categories: categories.sort((a, b) => a.sort_order - b.sort_order),
@@ -96,7 +96,7 @@ const Home = () => {
   const getImageUrl = (url) => {
     if (!url) return null;
     if (url.startsWith('http') || url.startsWith('blob')) return url;
-    return `http://${window.location.hostname}:5000${url}`;
+    return `${import.meta.env.VITE_API_URL}${url}`;
   };
 
   const getFilteredProducts = useCallback(() => {

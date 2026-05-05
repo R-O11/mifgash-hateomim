@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { api } from '../api/axios';
+import api from '../api/axios';
 import { Loader2, Plus, Edit, Trash2, ListTree, Save, X } from 'lucide-react';
 import shared from './AdminShared.module.css';
 import s from './AdminOptionGroups.module.css';
@@ -23,11 +23,12 @@ const AdminOptionGroups = () => {
   const fetchData = async () => {
     try {
       const [grpRes, prodRes] = await Promise.all([
-        api.getAdminOptionGroups(),
-        api.getAdminProducts()
+        api.get('/api/admin/option-groups'),
+        api.get('/api/admin/products')
       ]);
-      setGroups(grpRes.data);
-      setProducts(prodRes.data.filter(p => p.is_active === 1)); // Only show active products in dropdown
+      setGroups(grpRes.data?.data || grpRes.data);
+      const pData = prodRes.data?.data || prodRes.data || [];
+      setProducts(pData.filter(p => p.is_active === 1)); // Only show active products in dropdown
     } catch (err) {
       console.error(err);
     } finally {
@@ -65,9 +66,9 @@ const AdminOptionGroups = () => {
     try {
       const payload = { ...formData };
       if (isEditing === 'new') {
-        await api.createOptionGroup(payload);
+        await api.post('/api/admin/option-groups', payload);
       } else {
-        await api.updateOptionGroup(isEditing, payload);
+        await api.put('/api/admin/option-groups/' + isEditing, payload);
       }
       setIsEditing(null);
       fetchData();
@@ -85,7 +86,7 @@ const AdminOptionGroups = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("למחוק קבוצת אפשרויות זו?")) return;
     try {
-      await api.softDeleteOptionGroup(id);
+      await api.delete('/api/admin/option-groups/' + id);
       setGroups(prev => prev.map(c => c.id === id ? { ...c, is_active: 0 } : c));
     } catch (err) {
       alert("שגיאה במחיקה");
