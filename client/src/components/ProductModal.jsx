@@ -113,8 +113,14 @@ const ProductModal = ({ productId, onClose }) => {
 
   if (!product) return null;
 
+  const getImageUrl = (url) => {
+    if (!url) return null;
+    if (url.startsWith('http') || url.startsWith('blob')) return url;
+    return `${import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`}${url}`;
+  };
+
   const imgSrc = product.image_url
-    ? `${import.meta.env.VITE_API_URL}${product.image_url}?v=${product.updated_at || Date.now()}`
+    ? `${getImageUrl(product.image_url)}?v=${product.updated_at || Date.now()}`
     : 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&q=80&w=800';
 
   const favorited = isFavorite(productId);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Search, ShoppingCart, ClipboardList, Settings, Phone, MessageCircle } from 'lucide-react';
+import { Home, Search, ShoppingCart, ClipboardList, Settings, Phone, MapPin } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
 import { useMenuMode } from '../context/MenuModeContext';
@@ -7,6 +7,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import s from './BottomNavbar.module.css';
 
 const PHONE_NUMBER = '0501234567';
+
+// Restaurant coordinates
+const RESTAURANT_LAT = 32.0853;
+const RESTAURANT_LNG = 34.7818;
+const LOCATION_URL = `https://waze.com/ul?ll=${RESTAURANT_LAT},${RESTAURANT_LNG}&navigate=yes`;
 
 const BottomNavbar = () => {
   const { lang } = useLanguage();
@@ -63,13 +68,13 @@ const BottomNavbar = () => {
               <span className={s.cartLabel}>{lang === 'he' ? 'התקשר' : 'اتصل'}</span>
             </div>
 
-            {/* 3. Chat / WhatsApp */}
+            {/* 3. Navigation */}
             <NavItem
-              icon={MessageCircle}
-              label={lang === 'he' ? 'צ׳אט' : 'محادثة'}
+              icon={MapPin}
+              label={lang === 'he' ? 'ניווט' : 'تنقل'}
               active={false}
               onClick={() => {
-                window.open(`https://wa.me/972501234567?text=${encodeURIComponent('שלום, ראיתי את התפריט באתר')}`, '_blank');
+                window.open(LOCATION_URL, '_blank', 'noopener,noreferrer');
               }}
             />
           </div>

@@ -1,8 +1,15 @@
 import axios from 'axios';
 
+// Get dynamic base URL for local network testing
+const getBaseUrl = () => {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (typeof window !== 'undefined') return `http://${window.location.hostname}:5000`;
+  return 'http://localhost:5000';
+};
+
 // Create a clean axios instance using the environment variable
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '',
+  baseURL: getBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },

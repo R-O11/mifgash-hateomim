@@ -65,9 +65,13 @@ const Home = () => {
           api.get('/api/categories').catch(() => ({ data: [] })),
           api.get(`/api/products?t=${Date.now()}`).catch(() => ({ data: [] }))
         ]);
-        const products = prodRes.data || [];
-        const categories = catRes.data || [];
-        const statusData = statusRes.data || {};
+        const productsData = prodRes.data?.data || prodRes.data;
+        const categoriesData = catRes.data?.data || catRes.data;
+        const businessData = statusRes.data?.data || statusRes.data;
+
+        const products = Array.isArray(productsData) ? productsData : [];
+        const categories = Array.isArray(categoriesData) ? categoriesData : [];
+        const statusData = (businessData && typeof businessData === 'object' && !Array.isArray(businessData)) ? businessData : {};
         const recommendedProducts = products.filter(p => !!p.is_recommended).slice(0, 4);
         setData({
           categories: categories.sort((a, b) => a.sort_order - b.sort_order),
@@ -96,7 +100,7 @@ const Home = () => {
   const getImageUrl = (url) => {
     if (!url) return null;
     if (url.startsWith('http') || url.startsWith('blob')) return url;
-    return `${import.meta.env.VITE_API_URL}${url}`;
+    return `${import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`}${url}`;
   };
 
   const getFilteredProducts = useCallback(() => {
@@ -221,6 +225,12 @@ const Home = () => {
               <div className={s.heroVignette} />
               <div className={s.heroGradient} />
 
+              {/* New Status Badge */}
+              <div className={s.heroStatusTopBadge}>
+                <div className={`${s.statusDotLive} ${isOpen ? s.statusDotOpen : s.statusDotClosed}`} />
+                <span>{isOpen ? (lang === 'he' ? 'פתוח עכשיו' : 'مفتوح الآن') : (lang === 'he' ? 'סגור עכשיו' : 'مغلق الآن')}</span>
+              </div>
+
               <div className={s.heroContent}>
                 {menuMode ? (
                   <>
@@ -230,10 +240,12 @@ const Home = () => {
                     <p className={s.heroSubtitle}>
                       {lang === 'he' ? 'תפריט עשיר, טרי ומוכן להזמנה טלפונית' : 'قائمة غنية، طازجة وجاهزة للطلب الهاتفي'}
                     </p>
-                    <a href={`tel:${PHONE_NUMBER}`} className={s.heroCta}>
-                      <Phone size={16} />
-                      {lang === 'he' ? 'התקשר להזמנה' : 'اتصل للطلب'}
-                    </a>
+                    <div className={s.heroButtons}>
+                      <a href={`tel:${PHONE_NUMBER}`} className={s.heroCta}>
+                        <Phone size={16} />
+                        {lang === 'he' ? 'התקשר להזמנה' : 'اتصل للطلب'}
+                      </a>
+                    </div>
                   </>
                 ) : (
                   <>
@@ -252,34 +264,7 @@ const Home = () => {
           </section>
         )}
 
-        {/* ── INFO STRIP (menu mode only — 2 cards: status + location) ── */}
-        {menuMode && !searchOpen && (
-          <div className={s.infoStrip}>
-            {/* Status Card */}
-            <div className={s.infoCard}>
-              <div className={s.infoCardIcon}>
-                <div className={`${s.statusDotLive} ${isOpen ? s.statusDotOpen : s.statusDotClosed}`} />
-              </div>
-              <span className={s.infoCardLabel}>
-                {isOpen
-                  ? (lang === 'he' ? 'פתוח עכשיו' : 'مفتوح الآن')
-                  : (lang === 'he' ? 'סגור כעת' : 'مغلق الآن')
-                }
-              </span>
-              {!isOpen && (
-                <span className={s.infoCardValue}>
-                  {lang === 'he' ? 'נפתח ב־10:00' : 'يفتح الساعة 10:00'}
-                </span>
-              )}
-            </div>
-            {/* Location Card (clickable) */}
-            <button className={`${s.infoCard} ${s.infoCardClickable}`} onClick={() => setLocationModalOpen(true)}>
-              <div className={s.infoCardIcon}><MapPin size={18} /></div>
-              <span className={s.infoCardLabel}>{lang === 'he' ? 'מיקום' : 'الموقع'}</span>
-              <span className={s.infoCardValue}>{lang === 'he' ? 'ניווט →' : 'تنقل →'}</span>
-            </button>
-          </div>
-        )}
+
 
         {/* ── LOCATION MODAL ── */}
         {locationModalOpen && (
