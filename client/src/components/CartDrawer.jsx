@@ -86,7 +86,7 @@ const CartDrawer = () => {
             <>
               {cartItems.map(item => {
                 const imgSrc = item.product.image_url
-                  ? `${import.meta.env.VITE_API_URL}${item.product.image_url}`
+                  ? `${import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`}${item.product.image_url}`
                   : 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&q=80&w=100';
                 const isRemoving = removingId === item.cartItemId;
                 return (

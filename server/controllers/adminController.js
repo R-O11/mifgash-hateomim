@@ -79,13 +79,13 @@ const updateOrderStatus = async (req, res, next) => {
   }
 };
 
-// @desc    Get business settings (including hero config)
+// @desc    Get business settings
 // @route   GET /api/admin/settings
 // @access  Private/Admin
 const getSettings = async (req, res, next) => {
   try {
     const [rows] = await pool.query(
-      `SELECT manual_override_mode, menu_mode, hero_image_url, hero_badge_he, hero_badge_ar, hero_title_he, hero_title_ar, hero_desc_he, hero_desc_ar FROM business_settings LIMIT 1`
+      `SELECT * FROM business_settings LIMIT 1`
     );
     const data = rows.length > 0 ? rows[0] : { manual_override_mode: 'auto' };
     res.status(200).json({ success: true, data });
@@ -157,35 +157,7 @@ const updateOverrideMode = async (req, res, next) => {
   }
 };
 
-// @desc    Update hero configuration
-// @route   PATCH /api/admin/settings/hero
-// @access  Private/Admin
-const updateHeroSettings = async (req, res, next) => {
-  try {
-    const { hero_badge_he, hero_badge_ar, hero_title_he, hero_title_ar, hero_desc_he, hero_desc_ar } = req.body;
-    let image_url = undefined;
 
-    if (req.file) {
-      image_url = `/images/${req.file.filename}`;
-    }
-
-    if (image_url !== undefined) {
-      await pool.query(
-        `UPDATE business_settings SET hero_badge_he=?, hero_badge_ar=?, hero_title_he=?, hero_title_ar=?, hero_desc_he=?, hero_desc_ar=?, hero_image_url=?`,
-        [hero_badge_he, hero_badge_ar, hero_title_he, hero_title_ar, hero_desc_he, hero_desc_ar, image_url]
-      );
-    } else {
-      await pool.query(
-        `UPDATE business_settings SET hero_badge_he=?, hero_badge_ar=?, hero_title_he=?, hero_title_ar=?, hero_desc_he=?, hero_desc_ar=?`,
-        [hero_badge_he, hero_badge_ar, hero_title_he, hero_title_ar, hero_desc_he, hero_desc_ar]
-      );
-    }
-
-    res.status(200).json({ success: true, message: 'Hero settings updated', hero_image_url: image_url });
-  } catch (error) {
-    next(error);
-  }
-};
 
 // @desc    Update menu mode (menu only vs ordering)
 // @route   PATCH /api/admin/settings/menu-mode
@@ -196,6 +168,28 @@ const updateMenuMode = async (req, res, next) => {
     const value = menu_mode ? true : false;
     await pool.query('UPDATE business_settings SET menu_mode = ?', [value]);
     res.status(200).json({ success: true, message: `Menu mode set to ${value ? 'menu_only' : 'ordering'}` });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Update business info (address, phone, coordinates)
+// @route   PATCH /api/admin/settings/info
+// @access  Private/Admin
+const updateBusinessInfo = async (req, res, next) => {
+  try {
+    const { phone_number, whatsapp_number, address_he, address_ar, lat, lng } = req.body;
+    await pool.query(
+      `UPDATE business_settings SET 
+        phone_number = ?, 
+        whatsapp_number = ?, 
+        address_he = ?, 
+        address_ar = ?, 
+        lat = ?, 
+        lng = ?`
+      , [phone_number, whatsapp_number, address_he, address_ar, lat, lng]
+    );
+    res.status(200).json({ success: true, message: 'Business info updated' });
   } catch (error) {
     next(error);
   }
@@ -543,7 +537,8 @@ module.exports = {
   getStats,
   updateOverrideMode,
   updateMenuMode,
-  updateHeroSettings,
+  updateBusinessInfo,
+
   getAdminProducts,
   createProduct,
   updateProduct,

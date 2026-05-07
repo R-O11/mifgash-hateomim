@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { Power, Clock, Loader2, TrendingUp, ShoppingBag, Utensils, Zap, Monitor, BookOpen } from 'lucide-react';
-import AdminHeroConfig from './AdminHeroConfig';
+
 import s from './AdminDashboard.module.css';
 
 const StatCard = ({ icon, label, value, change, color }) => {
@@ -35,6 +35,10 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [changing, setChanging] = useState(false);
   const [changingMenuMode, setChangingMenuMode] = useState(false);
+  const [businessInfo, setBusinessInfo] = useState({
+    phone_number: '', whatsapp_number: '', address_he: '', address_ar: '', lat: '', lng: ''
+  });
+  const [savingInfo, setSavingInfo] = useState(false);
 
   useEffect(() => { fetchSettings(); }, []);
 
@@ -47,6 +51,14 @@ const AdminDashboard = () => {
       const settingsData = settingsRes.data?.data || settingsRes.data;
       setMode(settingsData.manual_override_mode);
       setMenuMode(!!settingsData.menu_mode);
+      setBusinessInfo({
+        phone_number: settingsData.phone_number || '',
+        whatsapp_number: settingsData.whatsapp_number || '',
+        address_he: settingsData.address_he || '',
+        address_ar: settingsData.address_ar || '',
+        lat: settingsData.lat || '',
+        lng: settingsData.lng || ''
+      });
       setStats(statsRes.data?.data || statsRes.data);
     } catch (error) { console.error(error); }
     finally { setLoading(false); }
@@ -72,6 +84,20 @@ const AdminDashboard = () => {
       console.error('Failed to update menu mode', error);
       alert('שגיאה בעדכון מצב האתר');
     } finally { setChangingMenuMode(false); }
+  };
+
+  const handleSaveInfo = async (e) => {
+    e.preventDefault();
+    setSavingInfo(true);
+    try {
+      await api.patch('/api/admin/settings/info', businessInfo);
+      alert('פרטי העסק עודכנו בהצלחה!');
+    } catch (error) {
+      console.error(error);
+      alert('שגיאה בעדכון פרטי העסק');
+    } finally {
+      setSavingInfo(false);
+    }
   };
 
   if (loading) return (
@@ -156,8 +182,53 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* ── HERO CONFIG ── */}
-      <AdminHeroConfig />
+      {/* ── BUSINESS INFO ── */}
+      <div className={s.modeCard}>
+        <div className={s.modeHeader}>
+          <h3 className={s.modeTitle}>פרטי העסק ומיקום</h3>
+          <p className={s.modeSubtitle}>הגדר כתובת, מיקום למפות (Waze/Google) וטלפונים ליצירת קשר</p>
+        </div>
+
+        <form onSubmit={handleSaveInfo} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
+          <div className={s.formGrid}>
+            <div className={s.inputGroup}>
+              <label className={s.inputLabel}>טלפון (להזמנות)</label>
+              <input type="text" className={s.inputField} value={businessInfo.phone_number} onChange={e => setBusinessInfo({...businessInfo, phone_number: e.target.value})} />
+            </div>
+            <div className={s.inputGroup}>
+              <label className={s.inputLabel}>טלפון לוואטסאפ (עם קידומת 972)</label>
+              <input type="text" className={s.inputField} value={businessInfo.whatsapp_number} onChange={e => setBusinessInfo({...businessInfo, whatsapp_number: e.target.value})} />
+            </div>
+          </div>
+
+          <div className={s.formGrid}>
+            <div className={s.inputGroup}>
+              <label className={s.inputLabel}>כתובת (עברית)</label>
+              <input type="text" className={s.inputField} value={businessInfo.address_he} onChange={e => setBusinessInfo({...businessInfo, address_he: e.target.value})} />
+            </div>
+            <div className={s.inputGroup}>
+              <label className={s.inputLabel}>כתובת (ערבית)</label>
+              <input type="text" className={s.inputField} value={businessInfo.address_ar} onChange={e => setBusinessInfo({...businessInfo, address_ar: e.target.value})} />
+            </div>
+          </div>
+
+          <div className={s.formGrid}>
+            <div className={s.inputGroup}>
+              <label className={s.inputLabel}>קו רוחב (Latitude)</label>
+              <input type="text" className={s.inputField} style={{ direction: 'ltr' }} value={businessInfo.lat} onChange={e => setBusinessInfo({...businessInfo, lat: e.target.value})} />
+            </div>
+            <div className={s.inputGroup}>
+              <label className={s.inputLabel}>קו אורך (Longitude)</label>
+              <input type="text" className={s.inputField} style={{ direction: 'ltr' }} value={businessInfo.lng} onChange={e => setBusinessInfo({...businessInfo, lng: e.target.value})} />
+            </div>
+          </div>
+
+          <button type="submit" disabled={savingInfo} className={s.submitBtn}>
+            {savingInfo ? 'שומר...' : 'שמור פרטים'}
+          </button>
+        </form>
+      </div>
+
     </div>
   );
 };

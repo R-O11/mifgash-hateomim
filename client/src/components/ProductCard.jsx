@@ -7,7 +7,7 @@ const FALLBACK = 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto
 
 const getImgSrc = (product) =>
   product.image_url
-    ? `${import.meta.env.VITE_API_URL}${product.image_url}?v=${product.updated_at || Date.now()}`
+    ? `${import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`}${product.image_url}?v=${product.updated_at || Date.now()}`
     : FALLBACK;
 
 const ProductCard = ({ product, onOpenModal, isCompact = false, isFeatured = false }) => {
@@ -36,9 +36,6 @@ const ProductCard = ({ product, onOpenModal, isCompact = false, isFeatured = fal
       </div>
     );
   }
-
-  // ── COMPACT (We unify this into Standard per instruction, but keep if used elsewhere) ──
-  // User: "Both cards in grid: identical structure, no variation" - Standard handles it.
 
   // ── STANDARD ──
   return (

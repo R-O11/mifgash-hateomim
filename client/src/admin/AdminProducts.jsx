@@ -9,6 +9,7 @@ const AdminProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [showDeleted, setShowDeleted] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,10 +60,12 @@ const AdminProducts = () => {
     }
   };
 
-  const filtered = products.filter(p => 
-    p.name_he.toLowerCase().includes(search.toLowerCase()) || 
-    (p.category_name_he || '').toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = products.filter(p => {
+    const matchesSearch = p.name_he.toLowerCase().includes(search.toLowerCase()) || 
+                          (p.category_name_he || '').toLowerCase().includes(search.toLowerCase());
+    const matchesActive = showDeleted ? true : p.is_active === 1;
+    return matchesSearch && matchesActive;
+  });
 
   if (loading) return <div style={{display: 'flex', justifyContent: 'center', padding: '2.5rem'}}><Loader2 className="animate-spin" color="#c9a84c" size={32} /></div>;
 
@@ -81,15 +84,26 @@ const AdminProducts = () => {
       </div>
 
       <div className={shared.card}>
-        <div className={shared.searchBar}>
-           <Search color="#94a3b8" size={20} />
-           <input 
-             type="text" 
-             placeholder="חיפוש מוצר או קטגוריה..." 
-             value={search}
-             onChange={e => setSearch(e.target.value)}
-             className={shared.searchInput}
-           />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
+          <div className={shared.searchBar} style={{ margin: 0, flex: 1, minWidth: '250px' }}>
+             <Search color="#94a3b8" size={20} />
+             <input 
+               type="text" 
+               placeholder="חיפוש מוצר או קטגוריה..." 
+               value={search}
+               onChange={e => setSearch(e.target.value)}
+               className={shared.searchInput}
+             />
+          </div>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', color: '#64748b', fontSize: '0.875rem' }}>
+            <input 
+              type="checkbox" 
+              checked={showDeleted} 
+              onChange={e => setShowDeleted(e.target.checked)} 
+              style={{ width: '1.2rem', height: '1.2rem', accentColor: '#c9a84c' }}
+            />
+            הצג מוצרים שנמחקו
+          </label>
         </div>
 
         <div className={shared.tableWrap}>
@@ -116,7 +130,7 @@ const AdminProducts = () => {
                   <tr key={product.id} className={`${shared.tableBodyRow} ${isDeleted ? shared.deletedRow : ''}`}>
                     <td className={shared.tableCell}>
                       {product.image_url ? (
-                        <img src={`${import.meta.env.VITE_API_URL}${product.image_url}?v=${product.updated_at || Date.now()}`} alt={product.name_he} className={s.imgCell} />
+                        <img src={`${import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`}${product.image_url}?v=${product.updated_at || Date.now()}`} alt={product.name_he} className={s.imgCell} />
                       ) : (
                         <div className={s.imgPlaceholder}>אין</div>
                       )}

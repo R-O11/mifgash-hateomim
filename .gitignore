@@ -5,3 +5,4 @@ dist/
 client/dist/
 server/dist/
 .env
+server/uploads/

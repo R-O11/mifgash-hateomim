@@ -7,7 +7,8 @@ router.get('/settings', adminController.getSettings);
 router.get('/stats', adminController.getStats);
 router.patch('/settings/manual-override', adminController.updateOverrideMode);
 router.patch('/settings/menu-mode', adminController.updateMenuMode);
-router.patch('/settings/hero', upload.single('hero_image'), adminController.updateHeroSettings);
+router.patch('/settings/info', adminController.updateBusinessInfo);
+
 
 router.get('/orders', adminController.getOrders);
 router.patch('/orders/:id/status', adminController.updateOrderStatus);

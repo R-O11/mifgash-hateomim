@@ -4,14 +4,8 @@ import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
 import { useMenuMode } from '../context/MenuModeContext';
 import { useNavigate, useLocation } from 'react-router-dom';
+import api from '../api/axios';
 import s from './BottomNavbar.module.css';
-
-const PHONE_NUMBER = '0501234567';
-
-// Restaurant coordinates
-const RESTAURANT_LAT = 32.0853;
-const RESTAURANT_LNG = 34.7818;
-const LOCATION_URL = `https://waze.com/ul?ll=${RESTAURANT_LAT},${RESTAURANT_LNG}&navigate=yes`;
 
 const BottomNavbar = () => {
   const { lang } = useLanguage();
@@ -19,6 +13,13 @@ const BottomNavbar = () => {
   const { menuMode } = useMenuMode();
   const navigate = useNavigate();
   const location = useLocation();
+  const [statusData, setStatusData] = React.useState({});
+
+  React.useEffect(() => {
+    api.get('/api/business-status').then(res => {
+      setStatusData(res.data?.data || res.data || {});
+    }).catch(console.error);
+  }, []);
 
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const isActive = (path) => location.pathname === path;
@@ -60,7 +61,7 @@ const BottomNavbar = () => {
             {/* 2. Phone Call — elevated center */}
             <div className={s.cartWrapper}>
               <a
-                href={`tel:${PHONE_NUMBER}`}
+                href={`tel:${statusData.phone_number || '0501234567'}`}
                 className={`${s.cartButton} ${s.phoneCenter}`}
               >
                 <Phone size={22} strokeWidth={2.2} />
@@ -74,7 +75,9 @@ const BottomNavbar = () => {
               label={lang === 'he' ? 'ניווט' : 'تنقل'}
               active={false}
               onClick={() => {
-                window.open(LOCATION_URL, '_blank', 'noopener,noreferrer');
+                const lat = statusData.lat || 32.0853;
+                const lng = statusData.lng || 34.7818;
+                window.open(`https://waze.com/ul?ll=${lat},${lng}&navigate=yes`, '_blank', 'noopener,noreferrer');
               }}
             />
           </div>

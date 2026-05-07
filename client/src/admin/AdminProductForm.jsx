@@ -64,7 +64,7 @@ const AdminProductForm = () => {
             prep_time_minutes: p.prep_time_minutes || ''
           });
           if (p.image_url) {
-            setImagePreview(`${import.meta.env.VITE_API_URL}${p.image_url}?v=${p.updated_at || Date.now()}`);
+            setImagePreview(`${import.meta.env.VITE_API_URL || `http://${window.location.hostname}:5000`}${p.image_url}?v=${p.updated_at || Date.now()}`);
           }
 
           // Fetch options

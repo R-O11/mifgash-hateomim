@@ -10,16 +10,9 @@ import { useFavorites } from '../context/FavoritesContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useMenuMode } from '../context/MenuModeContext';
 import ProductModal from '../components/ProductModal';
+import ProductCard from '../components/ProductCard';
 import { useNavigate } from 'react-router-dom';
-
-const PHONE_NUMBER = '0501234567';
-const WHATSAPP_NUMBER = '972501234567';
 const WHATSAPP_MSG = encodeURIComponent('שלום, ראיתי את התפריט באתר ואני רוצה להזמין');
-const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_MSG}`;
-
-// Restaurant coordinates (update with real values)
-const RESTAURANT_LAT = 32.0853;
-const RESTAURANT_LNG = 34.7818;
 
 const Home = () => {
   const { lang, t } = useLanguage();
@@ -33,12 +26,22 @@ const Home = () => {
   });
   const [loading, setLoading] = useState(true);
   const [selectedProductId, setSelectedProductId] = useState(null);
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState('featured');
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [locationModalOpen, setLocationModalOpen] = useState(false);
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const searchInputRef = useRef(null);
   const menuRef = useRef(null);
+
+  // Auto-slide hero images
+  useEffect(() => {
+    if (!data.recommended || data.recommended.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % Math.min(data.recommended.length, 5));
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [data.recommended]);
 
   // Listen for search toggle from BottomNavbar
   useEffect(() => {
@@ -105,9 +108,7 @@ const Home = () => {
 
   const getFilteredProducts = useCallback(() => {
     let filtered = data.products;
-    if (activeCategory !== 'all') {
-      filtered = filtered.filter(p => String(p.category_id) === String(activeCategory));
-    }
+
     if (searchQuery.trim()) {
       const q = searchQuery.trim().toLowerCase();
       filtered = filtered.filter(p =>
@@ -115,9 +116,18 @@ const Home = () => {
         (p.name_ar || '').toLowerCase().includes(q) ||
         (p.description_he || '').toLowerCase().includes(q)
       );
+      return filtered;
+    }
+
+    if (activeCategory === 'featured') {
+      return data.recommended.slice(0, 10); // 8-10 items
+    }
+
+    if (activeCategory !== 'all') {
+      filtered = filtered.filter(p => String(p.category_id) === String(activeCategory));
     }
     return filtered;
-  }, [data.products, activeCategory, searchQuery]);
+  }, [data.products, data.recommended, activeCategory, searchQuery]);
 
   const filteredProducts = getFilteredProducts();
 
@@ -141,35 +151,29 @@ const Home = () => {
   const renderProductCard = (product, idx, isRec = false) => (
     <div
       key={product.id}
-      className={isRec ? s.recCard : s.menuCard}
+      className={s.menuCard}
       style={{ animationDelay: `${idx * 70}ms` }}
       onClick={() => setSelectedProductId(product.id)}
     >
-      <div className={isRec ? s.cardImgWrap : s.menuCardImgWrap}>
+      <div className={s.menuCardImgWrap}>
         {product.image_url ? (
-          <img src={getImageUrl(product.image_url)} alt={t(product, 'name')} className={isRec ? s.cardImg : s.menuCardImg} />
+          <img src={getImageUrl(product.image_url)} alt={t(product, 'name')} className={s.menuCardImg} />
         ) : (
           <div className={s.cardImgPlaceholder}><span>🍽️</span></div>
         )}
-        <div className={isRec ? s.cardImgGradient : s.menuCardImgGradient} />
-        {/* Heart button only in ordering mode */}
-        {!menuMode && (
-          <button
-            className={`${s.heartBtn} ${isFavorite(product.id) ? s.heartBtnActive : ''}`}
-            onClick={e => { e.stopPropagation(); toggleFavorite(product.id); }}
-            style={{ display: 'flex' }}
-          >
-            <Heart size={12} fill={isFavorite(product.id) ? 'currentColor' : 'none'} />
-          </button>
+        <div className={s.menuCardImgGradient} />
+        {/* Gold recommended badge for featured tab */}
+        {product.is_recommended && activeCategory === 'featured' && (
+          <div className={s.recBadge}>⭐ {lang === 'he' ? 'מומלץ' : 'مميز'}</div>
         )}
       </div>
-      <div className={isRec ? s.cardBody : s.menuCardBody}>
-        <h4 className={isRec ? s.cardTitle : s.menuCardTitle}>{t(product, 'name')}</h4>
-        <p className={isRec ? s.cardDesc : s.menuCardDesc}>
+      <div className={s.menuCardBody}>
+        <h4 className={s.menuCardTitle}>{t(product, 'name')}</h4>
+        <p className={s.menuCardDesc}>
           {t(product, 'description') || (lang === 'he' ? 'טעים ומיוחד' : 'لذيذ ومميز')}
         </p>
-        <div className={isRec ? s.cardFooter : s.menuCardFooter}>
-          <span className={isRec ? s.cardPrice : s.menuCardPrice}>₪{product.base_price}</span>
+        <div className={s.menuCardFooter}>
+          <span className={s.menuCardPrice}>₪{product.base_price}</span>
           {menuMode ? (
             <button
               className={s.cardDetailsBtn}
@@ -221,7 +225,19 @@ const Home = () => {
         {hero && !searchOpen && (
           <section className={s.heroSection}>
             <div className={s.heroBanner}>
-              <img src={getImageUrl(hero.image_url)} alt="Hero" className={s.heroImg} />
+              {data.recommended && data.recommended.length > 0 ? (
+                data.recommended.slice(0, 5).map((rec, idx) => (
+                  <img 
+                    key={rec.id}
+                    src={getImageUrl(rec.image_url)} 
+                    alt="Hero" 
+                    className={`${s.heroImg} ${idx === currentHeroIndex ? s.heroImgActive : ''}`} 
+                  />
+                ))
+              ) : (
+                <img src={getImageUrl(hero.image_url)} alt="Hero" className={`${s.heroImg} ${s.heroImgActive}`} />
+              )}
+              
               <div className={s.heroVignette} />
               <div className={s.heroGradient} />
 
@@ -232,10 +248,18 @@ const Home = () => {
               </div>
 
               <div className={s.heroContent}>
-                <h2 className={s.heroTitle}>{lang === 'he' ? hero.title_he : hero.title_ar}</h2>
-                <p className={s.heroSubtitle}>{lang === 'he' ? hero.desc_he : hero.desc_ar}</p>
+                <h2 className={s.heroTitle}>
+                  {data.recommended && data.recommended.length > 0 ? 
+                    t(data.recommended[currentHeroIndex], 'name') : 
+                    (lang === 'he' ? hero.title_he : hero.title_ar)}
+                </h2>
+                <p className={s.heroSubtitle}>
+                  {data.recommended && data.recommended.length > 0 ? 
+                    t(data.recommended[currentHeroIndex], 'description') : 
+                    (lang === 'he' ? hero.desc_he : hero.desc_ar)}
+                </p>
                 <div className={s.heroButtons}>
-                  <a href={`tel:${PHONE_NUMBER}`} className={s.heroCta}>
+                  <a href={`tel:${data.status.phone_number || '0501234567'}`} className={s.heroCta}>
                     <Phone size={16} />
                     {lang === 'he' ? 'התקשר להזמנה' : 'اتصل للطلب'}
                   </a>
@@ -258,7 +282,7 @@ const Home = () => {
               </h3>
               <div className={s.locationOptions}>
                 <a
-                  href={`https://www.google.com/maps?q=${RESTAURANT_LAT},${RESTAURANT_LNG}`}
+                  href={`https://www.google.com/maps?q=${data.status.lat || 32.0853},${data.status.lng || 34.7818}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={s.locationOption}
@@ -270,7 +294,7 @@ const Home = () => {
                   <span>{lang === 'he' ? 'פתח ב־Google Maps' : 'افتح في خرائط Google'}</span>
                 </a>
                 <a
-                  href={`https://waze.com/ul?ll=${RESTAURANT_LAT},${RESTAURANT_LNG}&navigate=yes`}
+                  href={`https://waze.com/ul?ll=${data.status.lat || 32.0853},${data.status.lng || 34.7818}&navigate=yes`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={s.locationOption}
@@ -313,16 +337,16 @@ const Home = () => {
         <section className={s.categorySection} ref={menuRef}>
           <div className={s.categoryScroll}>
             <button
-              className={`${s.categoryChip} ${activeCategory === 'all' ? s.activeCategoryChip : ''}`}
-              onClick={() => setActiveCategory('all')}
+              className={`${s.categoryChip} ${activeCategory === 'featured' ? s.activeCategoryChip : ''}`}
+              onClick={() => setActiveCategory('featured')}
             >
-              {lang === 'he' ? 'הכל' : 'الكل'}
+              ⭐ {lang === 'he' ? 'מומלצים' : 'المميزة'}
             </button>
             {data.categories.map(cat => (
               <button
                 key={cat.id}
                 className={`${s.categoryChip} ${activeCategory === cat.id ? s.activeCategoryChip : ''}`}
-                onClick={() => setActiveCategory(activeCategory === cat.id ? 'all' : cat.id)}
+                onClick={() => setActiveCategory(cat.id)}
               >
                 {t(cat, 'name')}
               </button>
@@ -337,17 +361,11 @@ const Home = () => {
               <h3 className={s.recTitle}>
                 {searchQuery
                   ? (lang === 'he' ? 'תוצאות חיפוש' : 'نتائج البحث')
-                  : activeCategory !== 'all'
-                    ? (data.categories.find(c => c.id === activeCategory)?.[`name_${lang}`] || (lang === 'he' ? 'התפריט' : 'القائمة'))
-                    : (lang === 'he' ? 'כל התפריט' : 'القائمة الكاملة')
+                  : activeCategory === 'featured'
+                    ? (lang === 'he' ? 'המומלצים שלנו' : 'أطباقنا المميزة')
+                    : (data.categories.find(c => c.id === activeCategory)?.[`name_${lang}`] || '')
                 }
               </h3>
-              <span className={s.sectionSubtitle}>
-                {activeCategory === 'all' && !searchQuery
-                  ? (lang === 'he' ? 'כל המנות שלנו במקום אחד' : 'جميع أطباقنا في مكان واحد')
-                  : `${filteredProducts.length} ${lang === 'he' ? 'מנות' : 'أطباق'}`
-                }
-              </span>
             </div>
           </div>
 

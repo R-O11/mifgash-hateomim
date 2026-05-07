@@ -5,7 +5,7 @@ class BusinessService {
     try {
       // 1. Get fundamental business settings
       const [settingsRows] = await pool.query(
-        'SELECT manual_override_mode, delivery_enabled, pickup_enabled, menu_mode, hero_image_url, hero_badge_he, hero_badge_ar, hero_title_he, hero_title_ar, hero_desc_he, hero_desc_ar FROM business_settings LIMIT 1'
+        'SELECT * FROM business_settings LIMIT 1'
       );
 
       if (settingsRows.length === 0) {
