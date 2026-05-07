@@ -5,8 +5,6 @@ import s from './AdminHeroConfig.module.css';
 
 const AdminHeroConfig = () => {
   const [formData, setFormData] = useState({
-    hero_badge_he: '',
-    hero_badge_ar: '',
     hero_title_he: '',
     hero_title_ar: '',
     hero_desc_he: '',
@@ -29,8 +27,6 @@ const AdminHeroConfig = () => {
       if (resData.data) {
         const data = resData.data;
         setFormData({
-          hero_badge_he: data.hero_badge_he || '',
-          hero_badge_ar: data.hero_badge_ar || '',
           hero_title_he: data.hero_title_he || '',
           hero_title_ar: data.hero_title_ar || '',
           hero_desc_he: data.hero_desc_he || '',
@@ -102,10 +98,7 @@ const AdminHeroConfig = () => {
           
           <div className={s.col}>
             <h4 className={s.sectionTitle}>עברית (Hebrew)</h4>
-            <div className={s.inputGroup}>
-              <label className={s.label}>כותרת קטנה (תג כסף)</label>
-              <input type="text" name="hero_badge_he" value={formData.hero_badge_he} onChange={handleTextChange} className={s.inputField} />
-            </div>
+
             <div className={s.inputGroup}>
               <label className={s.label}>כותרת ראשית</label>
               <input type="text" name="hero_title_he" value={formData.hero_title_he} onChange={handleTextChange} className={s.inputField} />
@@ -118,10 +111,7 @@ const AdminHeroConfig = () => {
 
           <div className={s.col}>
             <h4 className={s.sectionTitle}>ערבית (Arabic)</h4>
-            <div dir="rtl" className={s.inputGroup}>
-              <label className={s.label}>כותרת קטנה (תג כסף)</label>
-              <input type="text" name="hero_badge_ar" value={formData.hero_badge_ar} onChange={handleTextChange} className={s.inputField} />
-            </div>
+
             <div dir="rtl" className={s.inputGroup}>
               <label className={s.label}>כותרת ראשית</label>
               <input type="text" name="hero_title_ar" value={formData.hero_title_ar} onChange={handleTextChange} className={s.inputField} />

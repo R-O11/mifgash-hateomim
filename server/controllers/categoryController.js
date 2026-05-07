@@ -5,10 +5,10 @@ const pool = require('../config/db');
 // @access  Public
 const getCategories = async (req, res, next) => {
   try {
-    const result = await pool.query(
+    const [rows] = await pool.query(
       'SELECT id, name_he, name_ar, image_url, sort_order FROM categories WHERE is_active = true ORDER BY sort_order ASC'
     );
-    res.status(200).json({ success: true, data: result.rows });
+    res.status(200).json({ success: true, data: rows });
   } catch (error) {
     next(error);
   }

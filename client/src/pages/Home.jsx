@@ -72,7 +72,7 @@ const Home = () => {
         const products = Array.isArray(productsData) ? productsData : [];
         const categories = Array.isArray(categoriesData) ? categoriesData : [];
         const statusData = (businessData && typeof businessData === 'object' && !Array.isArray(businessData)) ? businessData : {};
-        const recommendedProducts = products.filter(p => !!p.is_recommended).slice(0, 4);
+        const recommendedProducts = products.filter(p => !!p.is_recommended);
         setData({
           categories: categories.sort((a, b) => a.sort_order - b.sort_order),
           products,
@@ -232,33 +232,14 @@ const Home = () => {
               </div>
 
               <div className={s.heroContent}>
-                {menuMode ? (
-                  <>
-                    <h2 className={s.heroTitle}>
-                      {lang === 'he' ? 'טעמים שמרגישים בבית' : 'نكهات تشعرك بالبيت'}
-                    </h2>
-                    <p className={s.heroSubtitle}>
-                      {lang === 'he' ? 'תפריט עשיר, טרי ומוכן להזמנה טלפונית' : 'قائمة غنية، طازجة وجاهزة للطلب الهاتفي'}
-                    </p>
-                    <div className={s.heroButtons}>
-                      <a href={`tel:${PHONE_NUMBER}`} className={s.heroCta}>
-                        <Phone size={16} />
-                        {lang === 'he' ? 'התקשר להזמנה' : 'اتصل للطلب'}
-                      </a>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {(lang === 'he' ? hero.badge_he : hero.badge_ar) && (
-                      <div className={s.heroBadge}>{lang === 'he' ? hero.badge_he : hero.badge_ar}</div>
-                    )}
-                    <h2 className={s.heroTitle}>{lang === 'he' ? hero.title_he : hero.title_ar}</h2>
-                    <p className={s.heroSubtitle}>{lang === 'he' ? hero.desc_he : hero.desc_ar}</p>
-                    <button className={s.heroCta} onClick={scrollToMenu}>
-                      {lang === 'he' ? 'הזמן עכשיו' : 'اطلب الآن'} <ChevronLeft className={s.heroCtaIcon} />
-                    </button>
-                  </>
-                )}
+                <h2 className={s.heroTitle}>{lang === 'he' ? hero.title_he : hero.title_ar}</h2>
+                <p className={s.heroSubtitle}>{lang === 'he' ? hero.desc_he : hero.desc_ar}</p>
+                <div className={s.heroButtons}>
+                  <a href={`tel:${PHONE_NUMBER}`} className={s.heroCta}>
+                    <Phone size={16} />
+                    {lang === 'he' ? 'התקשר להזמנה' : 'اتصل للطلب'}
+                  </a>
+                </div>
               </div>
             </div>
           </section>
@@ -349,54 +330,26 @@ const Home = () => {
           </div>
         </section>
 
-        {/* ── RECOMMENDATIONS (only when viewing all & no search) ── */}
-        {data.recommended.length > 0 && activeCategory === 'all' && !searchQuery && (
-          <section>
-            <div className={s.sectionHeader}>
-              <div className={s.recHeader}>
-                <h3 className={s.recTitle}>{lang === 'he' ? 'ההמלצות שלנו' : 'توصياتنا'}</h3>
-                <span className={s.sectionSubtitle}>{lang === 'he' ? 'נבחרו בקפידה עבורך' : 'مختارة بعناية لك'}</span>
-              </div>
-              <button className={s.seeAllBtn} onClick={scrollToMenu}>
-                {lang === 'he' ? 'הכל' : 'الكل'} <ChevronLeft size={13} />
-              </button>
-            </div>
-            <div className={s.recGrid}>
-              {data.recommended.map((product, idx) => renderProductCard(product, idx, true))}
-            </div>
-          </section>
-        )}
-
-        {/* ── OFFER BANNER (ordering mode only, no search) ── */}
-        {!menuMode && !searchQuery && activeCategory === 'all' && (
-          <div className={s.offerBanner}>
-            <div className={s.offerLeft}>
-              <span className={s.offerLabel}>{lang === 'he' ? 'מבצע מיוחד' : 'عرض خاص'}</span>
-              <h4 className={s.offerTitle}>{lang === 'he' ? 'משלוח חינם' : 'شحن مجاني'}</h4>
-              <span className={s.offerDesc}>{lang === 'he' ? 'בהזמנה מעל ₪80 · עד סוף השבוע' : 'للطلبات فوق ₪80 · حتى نهاية الأسبوع'}</span>
-            </div>
-            <button className={s.offerBtn}>{lang === 'he' ? 'להזמנה' : 'اطلب'}</button>
-          </div>
-        )}
-
         {/* ── FULL MENU GRID ── */}
-        {(activeCategory !== 'all' || searchQuery) && (
-          <section className={s.menuSection}>
-            <div className={s.sectionHeader}>
-              <div className={s.recHeader}>
-                <h3 className={s.recTitle}>
-                  {searchQuery
-                    ? (lang === 'he' ? 'תוצאות חיפוש' : 'نتائج البحث')
-                    : activeCategory !== 'all'
-                      ? (data.categories.find(c => c.id === activeCategory)?.[`name_${lang}`] || (lang === 'he' ? 'התפריט' : 'القائمة'))
-                      : (lang === 'he' ? 'התפריט המלא' : 'القائمة الكاملة')
-                  }
-                </h3>
-                <span className={s.sectionSubtitle}>
-                  {filteredProducts.length} {lang === 'he' ? 'מנות' : 'أطباق'}
-                </span>
-              </div>
+        <section className={s.menuSection}>
+          <div className={s.sectionHeader}>
+            <div className={s.recHeader}>
+              <h3 className={s.recTitle}>
+                {searchQuery
+                  ? (lang === 'he' ? 'תוצאות חיפוש' : 'نتائج البحث')
+                  : activeCategory !== 'all'
+                    ? (data.categories.find(c => c.id === activeCategory)?.[`name_${lang}`] || (lang === 'he' ? 'התפריט' : 'القائمة'))
+                    : (lang === 'he' ? 'כל התפריט' : 'القائمة الكاملة')
+                }
+              </h3>
+              <span className={s.sectionSubtitle}>
+                {activeCategory === 'all' && !searchQuery
+                  ? (lang === 'he' ? 'כל המנות שלנו במקום אחד' : 'جميع أطباقنا في مكان واحد')
+                  : `${filteredProducts.length} ${lang === 'he' ? 'מנות' : 'أطباق'}`
+                }
+              </span>
             </div>
+          </div>
 
             {filteredProducts.length === 0 ? (
               <div className={s.emptyState}>
@@ -409,7 +362,6 @@ const Home = () => {
               </div>
             )}
           </section>
-        )}
       </main>
 
 

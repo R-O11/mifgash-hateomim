@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogOut, LayoutDashboard, Utensils, ShoppingBag, Tags, Crown } from 'lucide-react';
+import GlobalFooter from '../components/GlobalFooter';
 import s from './AdminLayout.module.css';
 
 const AdminLayout = () => {
@@ -70,6 +71,7 @@ const AdminLayout = () => {
       {/* ── MAIN CONTENT ── */}
       <main className={s.mainContent}>
         <Outlet />
+        <GlobalFooter />
       </main>
     </div>
   );

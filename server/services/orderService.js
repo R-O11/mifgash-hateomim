@@ -13,13 +13,12 @@ class OrderService {
     const datePrefix = `MH-${yyyy}${mm}${dd}`;
 
     // Select the last order of today (FOR UPDATE locks the row to prevent race conditions)
-    const result = await client.query(
+    const [rows] = await client.query(
       `SELECT order_number FROM orders 
-       WHERE order_number LIKE $1 
+       WHERE order_number LIKE ? 
        ORDER BY id DESC LIMIT 1 FOR UPDATE`,
       [`${datePrefix}-%`]
     );
-    const rows = result.rows;
 
     let nextSequence = 1;
 
@@ -41,7 +40,7 @@ class OrderService {
    * then persists via a robust transaction.
    */
   async createOrder(payload) {
-    const client = await pool.connect();
+    const client = await pool.getConnection();
 
     try {
       await client.query('BEGIN');
@@ -65,12 +64,11 @@ class OrderService {
       // 2. Iterate each requested product to find true price in DB
       for (const item of items) {
         // Fetch product
-        const prodResult = await client.query(
+        const [prodRows] = await client.query(
           `SELECT id, name_he, name_ar, base_price, is_available 
-           FROM products WHERE id = $1 AND is_active = true`,
+           FROM products WHERE id = ? AND is_active = true`,
           [item.productId]
         );
-        const prodRows = prodResult.rows;
 
         if (prodRows.length === 0) {
           throw new Error(`Product ID ${item.productId} is invalid or inactive.`);
@@ -90,12 +88,11 @@ class OrderService {
         const dbOptions = [];
 
         // Fetch ALL groups for this product ahead of validation
-        const groupResult = await client.query(
+        const [groupRows] = await client.query(
           `SELECT id, name_he, name_ar, min_select, max_select, is_required
-           FROM option_groups WHERE product_id = $1 AND is_active = true`,
+           FROM option_groups WHERE product_id = ? AND is_active = true`,
           [product.id]
         );
-        const groupRows = groupResult.rows;
 
         // Group counts map
         const groupSelectionCounts = {};
@@ -106,12 +103,11 @@ class OrderService {
         // 3. Process options for the item
         if (item.options && Array.isArray(item.options)) {
           for (const opt of item.options) {
-            const optItemResult = await client.query(
+            const [optItemRows] = await client.query(
               `SELECT id, group_id, name_he, name_ar, price_change 
-               FROM option_items WHERE id = $1 AND is_active = true`,
+               FROM option_items WHERE id = ? AND is_active = true`,
               [opt.itemId]
             );
-            const optItemRows = optItemResult.rows;
 
             if (optItemRows.length === 0) {
               throw new Error(`Option Item ID ${opt.itemId} is invalid.`);
@@ -171,42 +167,40 @@ class OrderService {
       const order_number = await this.generateOrderNumber(client);
 
       // Insert Order
-      const orderResult = await client.query(
+      const [orderResult] = await client.query(
         `INSERT INTO orders (
            order_number, order_type, customer_name, customer_phone, notes, language, 
            subtotal, delivery_fee, total_amount, payment_method, payment_status
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-        RETURNING id`,
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
         [
           order_number, order_type, customer_name, customer_phone, notes, theme_lang,
           subtotal, delivery_fee, total_amount, payment_method, payment_status
         ]
       );
 
-      const orderId = orderResult.rows[0].id;
+      const orderId = orderResult.insertId;
 
       // Insert Items
       for (const item of dbOrderItems) {
-        const itemResult = await client.query(
+        const [itemResult] = await client.query(
           `INSERT INTO order_items (
              order_id, product_id, product_name_he, product_name_ar, 
              base_price, quantity, item_total, notes
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-          RETURNING id`,
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
           [
              orderId, item.product_id, item.product_name_he, item.product_name_ar,
              item.base_price, item.quantity, item.item_total, item.notes
           ]
         );
 
-        const orderItemId = itemResult.rows[0].id;
+        const orderItemId = itemResult.insertId;
 
         // Insert Item Options
         for (const opt of item.options) {
            await client.query(
              `INSERT INTO order_item_options (
                 order_item_id, group_name_he, group_name_ar, option_name_he, option_name_ar, price_change
-             ) VALUES ($1, $2, $3, $4, $5, $6)`,
+             ) VALUES (?, ?, ?, ?, ?, ?)`,
              [
                orderItemId, opt.group_name_he, opt.group_name_ar, opt.option_name_he, opt.option_name_ar, opt.price_change
              ]
@@ -236,12 +230,11 @@ class OrderService {
    * Safe for public fetching (only returns non-sensitive data).
    */
   async getOrderForTracking(orderNumber) {
-    const result = await pool.query(
+    const [rows] = await pool.query(
       `SELECT order_number, order_status, created_at, total_amount, order_type 
-       FROM orders WHERE order_number = $1 LIMIT 1`,
+       FROM orders WHERE order_number = ? LIMIT 1`,
       [orderNumber]
     );
-    const rows = result.rows;
 
     if (rows.length === 0) {
       return null;

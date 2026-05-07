@@ -3,20 +3,22 @@ const pool = require('../config/db');
 
 async function seedAdmin() {
   try {
-    // 1. Create admins table if it doesn't exist (PostgreSQL syntax)
+    // 1. Create admin_users table if it doesn't exist (MySQL syntax)
     const createTableQuery = `
-      CREATE TABLE IF NOT EXISTS admins (
-        id SERIAL PRIMARY KEY,
-        username VARCHAR(50) NOT NULL UNIQUE,
-        password VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      CREATE TABLE IF NOT EXISTS admin_users (
+        id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(100) NOT NULL UNIQUE,
+        password_hash VARCHAR(255) NOT NULL,
+        full_name VARCHAR(150) NOT NULL,
+        is_active TINYINT(1) NOT NULL DEFAULT 1,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )
     `;
     await pool.query(createTableQuery);
 
     // 2. Check if an admin already exists
-    const result = await pool.query('SELECT * FROM admins WHERE username = $1', ['admin']);
-    const existingAdmins = result.rows;
+    const [existingAdmins] = await pool.query('SELECT * FROM admin_users WHERE username = ?', ['admin']);
 
     if (existingAdmins.length > 0) {
       console.log('Admin user already exists.');
@@ -26,7 +28,7 @@ async function seedAdmin() {
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(defaultPassword, saltRounds);
 
-      await pool.query('INSERT INTO admins (username, password) VALUES ($1, $2)', ['admin', hashedPassword]);
+      await pool.query('INSERT INTO admin_users (username, password_hash, full_name) VALUES (?, ?, ?)', ['admin', hashedPassword, 'Main Admin']);
       console.log('Admin user seeded successfully! Username: admin, Password: password123');
     }
   } catch (error) {

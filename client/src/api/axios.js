@@ -19,7 +19,7 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   // Check if the URL belongs to admin paths (which require auth)
   if (config.url.includes('/admin')) {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

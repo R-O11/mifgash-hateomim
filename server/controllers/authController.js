@@ -14,8 +14,7 @@ const login = async (req, res, next) => {
     }
 
     // Check if user exists
-    const result = await pool.query('SELECT * FROM admins WHERE username = $1', [username]);
-    const rows = result.rows;
+    const [rows] = await pool.query('SELECT * FROM admin_users WHERE username = ?', [username]);
 
     if (rows.length === 0) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });
@@ -24,7 +23,7 @@ const login = async (req, res, next) => {
     const admin = rows[0];
 
     // Check password
-    const isMatch = await bcrypt.compare(password, admin.password);
+    const isMatch = await bcrypt.compare(password, admin.password_hash);
 
     if (!isMatch) {
       return res.status(401).json({ success: false, message: 'Invalid credentials' });

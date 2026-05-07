@@ -1,15 +1,20 @@
-const { Pool } = require('pg');
+const mysql = require('mysql2/promise');
 require('dotenv').config();
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'mifgash_hateomim',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-pool.connect()
-  .then(client => {
+pool.getConnection()
+  .then(connection => {
     console.log('Database connected successfully');
-    client.release();
+    connection.release();
   })
   .catch(err => {
     console.error('Error connecting to the database:', err.message);

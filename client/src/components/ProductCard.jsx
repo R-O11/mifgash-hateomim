@@ -51,7 +51,7 @@ const ProductCard = ({ product, onOpenModal, isCompact = false, isFeatured = fal
         <p className={s.standardDesc}>{t(product, 'description')}</p>
         <div className={s.standardFooter}>
           <div className={s.standardMeta}>
-            ⏱ 20 {lang === 'he' ? 'דק׳' : 'د'}
+            ⏱ {product.prep_time_minutes || 15} {lang === 'he' ? 'דק׳' : 'د'}
           </div>
           <span className={s.standardPrice}>{price}</span>
         </div>

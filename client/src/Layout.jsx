@@ -6,6 +6,7 @@ import { CartProvider } from './context/CartContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { MenuModeProvider, useMenuMode } from './context/MenuModeContext';
 import BottomNavbar from './components/BottomNavbar';
+import GlobalFooter from './components/GlobalFooter';
 import s from './Layout.module.css';
 
 const LayoutContent = () => {
@@ -17,6 +18,7 @@ const LayoutContent = () => {
       {!menuMode && <CartDrawer />}
       <main className={s.main}>
         <Outlet />
+        <GlobalFooter />
       </main>
       <BottomNavbar />
     </div>

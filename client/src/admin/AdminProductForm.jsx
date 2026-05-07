@@ -26,7 +26,8 @@ const AdminProductForm = () => {
     category_id: '',
     is_active: '1',
     is_available: '1',
-    is_recommended: '0'
+    is_recommended: '0',
+    prep_time_minutes: ''
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -59,7 +60,8 @@ const AdminProductForm = () => {
             category_id: p.category_id || (catRes.data.length > 0 ? catRes.data[0].id : ''),
             is_active: p.is_active?.toString() || '1',
             is_available: p.is_available?.toString() || '1',
-            is_recommended: p.is_recommended?.toString() || '0'
+            is_recommended: p.is_recommended?.toString() || '0',
+            prep_time_minutes: p.prep_time_minutes || ''
           });
           if (p.image_url) {
             setImagePreview(`${import.meta.env.VITE_API_URL}${p.image_url}?v=${p.updated_at || Date.now()}`);
@@ -304,6 +306,13 @@ const AdminProductForm = () => {
                       <select required name="category_id" value={formData.category_id} onChange={handleChange} className={s.inputField} style={{backgroundColor: '#fff'}}>
                          {categories.map(c => <option key={c.id} value={c.id}>{c.name_he}</option>)}
                       </select>
+                   </div>
+                </div>
+
+                <div className={s.fieldGrid}>
+                   <div>
+                      <label className={s.label}>זמן הכנה משוער (בדקות)</label>
+                      <input type="number" min="1" name="prep_time_minutes" value={formData.prep_time_minutes} onChange={handleChange} className={s.inputField} style={{direction: 'ltr', textAlign: 'right'}} placeholder="לדוגמה: 15" />
                    </div>
                 </div>
              </div>

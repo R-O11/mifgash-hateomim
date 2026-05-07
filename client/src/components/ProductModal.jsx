@@ -156,12 +156,10 @@ const ProductModal = ({ productId, onClose }) => {
           <div className={s.titleSection}>
             <h2 className={s.title}>{t(product, 'name')}</h2>
             <div className={s.meta}>
-              {product.prep_time_minutes && (
-                <div className={s.metaTime}>
-                  <Clock size={14} />
-                  <span>{product.prep_time_minutes} {lang === 'he' ? 'דק׳' : 'دق'}</span>
-                </div>
-              )}
+              <div className={s.metaTime}>
+                <Clock size={14} />
+                <span>{product.prep_time_minutes || 15} {lang === 'he' ? 'דק׳' : 'دق'}</span>
+              </div>
             </div>
             {t(product, 'description') && (
               <p className={s.description}>{t(product, 'description')}</p>

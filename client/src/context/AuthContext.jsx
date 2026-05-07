@@ -9,8 +9,8 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check local storage for token on mount
-    const storedUser = localStorage.getItem('adminUser');
-    const token = localStorage.getItem('token');
+    const storedUser = sessionStorage.getItem('adminUser');
+    const token = sessionStorage.getItem('token');
     
     if (storedUser && token) {
       try {
@@ -37,8 +37,8 @@ export const AuthProvider = ({ children }) => {
     const resData = res.data;
     if (resData.success && resData.data.token) {
       setUser({ id: resData.data.id, username: resData.data.username });
-      localStorage.setItem('token', resData.data.token);
-      localStorage.setItem('adminUser', JSON.stringify({ id: resData.data.id, username: resData.data.username }));
+      sessionStorage.setItem('token', resData.data.token);
+      sessionStorage.setItem('adminUser', JSON.stringify({ id: resData.data.id, username: resData.data.username }));
       return true;
     }
     return false;
@@ -46,8 +46,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('adminUser');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('adminUser');
   };
 
   return (
