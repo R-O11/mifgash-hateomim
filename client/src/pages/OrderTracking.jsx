@@ -77,7 +77,7 @@ const OrderTracking = () => {
           lang === 'he' ? 'ההזמנה שלך מוכנה! 🎉' : 'طلبك جاهز! 🎉',
           {
             body: lang === 'he' ? `בוא לאסוף את ההזמנה #${orderNum}` : `تعال واستلم طلبك #${orderNum}`,
-            icon: '/vite.svg',
+            icon: '/logo.png',
             vibrate: [200, 100, 200]
           }
         );

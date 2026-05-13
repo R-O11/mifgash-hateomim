@@ -59,6 +59,7 @@ CREATE TABLE products (
   prep_time_minutes INT NOT NULL DEFAULT 15,
   is_active TINYINT(1) NOT NULL DEFAULT 1,
   is_available TINYINT(1) NOT NULL DEFAULT 1,
+  is_recommended TINYINT(1) NOT NULL DEFAULT 0,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
@@ -225,6 +226,13 @@ CREATE TABLE business_settings (
   pickup_enabled TINYINT(1) NOT NULL DEFAULT 1,
   manual_override_mode ENUM('auto','force_open','force_closed') NOT NULL DEFAULT 'auto',
   manual_override_note VARCHAR(255) DEFAULT NULL,
+  menu_mode TINYINT(1) NOT NULL DEFAULT 0,
+  phone_number VARCHAR(30) DEFAULT NULL,
+  whatsapp_number VARCHAR(30) DEFAULT NULL,
+  address_he VARCHAR(255) DEFAULT NULL,
+  address_ar VARCHAR(255) DEFAULT NULL,
+  lat DECIMAL(10,8) DEFAULT NULL,
+  lng DECIMAL(11,8) DEFAULT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
@@ -305,10 +313,14 @@ INSERT INTO business_settings (
   delivery_enabled,
   pickup_enabled,
   manual_override_mode,
-  manual_override_note
+  manual_override_note,
+  menu_mode,
+  phone_number,
+  address_he,
+  address_ar
 )
 VALUES
-('מפגש התאומים', 'ملتقى التوأم', 'he', 'ILS', 1, 1, 'auto', NULL);
+('מפגש התאומים', 'ملتقى التوأم', 'he', 'ILS', 1, 1, 'auto', NULL, 0, '050-0000000', 'כתובת העסק', 'عنوان العمل');
 
 INSERT INTO business_hours (day_of_week, is_open, open_time, close_time)
 VALUES

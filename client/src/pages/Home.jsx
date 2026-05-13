@@ -39,7 +39,7 @@ const Home = () => {
     if (!data.recommended || data.recommended.length === 0) return;
     const interval = setInterval(() => {
       setCurrentHeroIndex((prev) => (prev + 1) % Math.min(data.recommended.length, 5));
-    }, 4000);
+    }, 5500);
     return () => clearInterval(interval);
   }, [data.recommended]);
 

@@ -23,13 +23,12 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  height: 80px;
+  height: 72px;
   background: var(--bg);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   padding: 0 20px;
   display: flex;
   align-items: center;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .headerTop {
@@ -64,36 +63,35 @@
 }
 
 .crownBadge {
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   background: rgba(11, 11, 11, 0.85);
-  border: 1px solid rgba(200, 155, 60, 0.2);
+  box-shadow: 0 0 0 1px rgba(200, 155, 60, 0.12);
 }
 
 .brandName {
   margin: 0;
-  font-size: 19px;
-  font-weight: 900;
-  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 0.5px;
-  font-family: 'Rubik', 'Heebo', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--gold);
+  letter-spacing: 0.2px;
+  font-family: 'Heebo', sans-serif;
   line-height: 1.1;
 }
 
 .brandSubtitle {
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--muted);
-  letter-spacing: 1px;
-  font-family: 'Rubik', 'Heebo', sans-serif;
+  font-size: 10.5px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  font-family: 'Heebo', sans-serif;
+  margin-top: 1px;
 }
 
 /* Hidden legacy classes */
@@ -185,18 +183,17 @@
 
 /* ─── HERO SECTION ─── */
 .heroSection {
-  padding: 16px 16px 0;
+  padding: 0;
+  margin-bottom: 0;
 }
 
 .heroBanner {
   position: relative;
   width: 100%;
-  height: 260px;
-  border-radius: 24px;
+  height: 340px;
   overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  margin-bottom: 24px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.7), 0 0 80px rgba(200, 155, 60, 0.06);
+  margin-bottom: 0;
 }
 
 .heroImg {
@@ -206,22 +203,34 @@
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transition: opacity 1s ease-in-out, transform 4s linear;
+  transition: opacity 1.5s ease-in-out;
+  transform: scale(1.04);
+  will-change: transform, opacity;
 }
 
 .heroImgActive {
   opacity: 1;
+  animation: heroPan 12s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.heroBanner:hover .heroImgActive {
-  transform: scale(1.05);
+@keyframes heroPan {
+  from {
+    transform: scale(1.04);
+  }
+
+  to {
+    transform: scale(1);
+  }
 }
 
 .heroVignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 20%, rgba(0, 0, 0, 0.5) 100%);
+  background:
+    radial-gradient(ellipse at 60% 40%, transparent 30%, rgba(0, 0, 0, 0.5) 100%),
+    radial-gradient(ellipse at 30% 80%, rgba(180, 130, 50, 0.08) 0%, transparent 60%);
   pointer-events: none;
+  z-index: 1;
 }
 
 .heroGradient {
@@ -229,20 +238,40 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 100%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.3) 100%);
+  height: 85%;
+  background: linear-gradient(to top,
+      rgba(11, 11, 11, 0.95) 0%,
+      rgba(11, 11, 11, 0.7) 35%,
+      rgba(11, 11, 11, 0.25) 60%,
+      rgba(11, 11, 11, 0.08) 75%,
+      transparent 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Warm atmospheric glow at bottom of hero */
+.heroBanner::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(200, 155, 60, 0.15), transparent);
+  z-index: 3;
 }
 
 .heroContent {
   position: absolute;
   bottom: 0;
   right: 0;
-  padding: 24px;
+  left: 0;
+  padding: 28px 22px 26px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   align-items: flex-start;
-  width: 100%;
+  z-index: 2;
 }
 
 .heroBadge {
@@ -258,22 +287,17 @@
 
 .heroStatusTopBadge {
   position: absolute;
-  top: 14px;
-  right: 14px;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  padding: 5px 12px;
+  top: 16px;
+  right: 16px;
   display: flex;
   align-items: center;
   gap: 6px;
   z-index: 10;
-  font-size: 11px;
-  font-weight: 700;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
 .heroStatusBadge {
@@ -290,20 +314,23 @@
 
 .heroTitle {
   margin: 0;
-  font-size: 21px;
+  font-size: 28px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.92);
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
-  line-height: 1.35;
-  font-family: 'Rubik', 'Heebo', 'Montserrat', sans-serif;
+  color: #fff;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5), 0 0 40px rgba(200, 155, 60, 0.08);
+  line-height: 1.2;
+  font-family: 'Playfair Display', 'Heebo', serif;
+  letter-spacing: -0.3px;
 }
 
 .heroSubtitle {
-  font-size: 12.5px;
-  color: rgba(255, 255, 255, 0.55);
-  margin: 4px 0 0 0;
-  font-weight: 500;
-  line-height: 1.5;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.58);
+  margin: 6px 0 0 0;
+  font-weight: 400;
+  line-height: 1.55;
+  font-family: 'Inter', sans-serif;
+  max-width: 85%;
 }
 
 .heroInfoPills {
@@ -319,11 +346,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 100%;
 }
 
 .heroCta {
-  flex: 1;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -332,19 +357,25 @@
   color: #0d0d0d;
   font-size: 13px;
   font-weight: 700;
-  padding: 10px 16px;
-  border-radius: 10px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
   border: none;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  transition: all 0.25s ease;
-  font-family: inherit;
+  box-shadow: 0 4px 16px rgba(200, 155, 60, 0.25);
+  transition: transform var(--duration-fast) var(--ease-out),
+              filter var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out);
+  font-family: 'Heebo', sans-serif;
   text-decoration: none;
+  letter-spacing: 0.2px;
 }
 
-.heroCta:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
+@media (hover: hover) and (pointer: fine) {
+  .heroCta:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(200, 155, 60, 0.35);
+  }
 }
 
 .heroCta:active {
@@ -371,13 +402,16 @@
   padding: 10px 16px;
   border-radius: 10px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: transform var(--duration-fast) var(--ease-out),
+              background var(--duration-normal) var(--ease-out);
   font-family: inherit;
 }
 
-.heroNavBtn:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
+@media (hover: hover) and (pointer: fine) {
+  .heroNavBtn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+  }
 }
 
 .heroNavBtn:active {
@@ -408,13 +442,21 @@
 
 .infoCardClickable {
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform var(--duration-fast) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out),
+              background var(--duration-normal) var(--ease-out);
   font-family: inherit;
 }
 
-.infoCardClickable:hover {
-  border-color: rgba(200, 155, 60, 0.2);
-  background: rgba(200, 155, 60, 0.04);
+.infoCardClickable:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .infoCardClickable:hover {
+    border-color: rgba(200, 155, 60, 0.2);
+    background: rgba(200, 155, 60, 0.04);
+  }
 }
 
 .infoCardIcon {
@@ -506,7 +548,7 @@
   color: var(--text);
   margin: 0 0 18px 0;
   text-align: center;
-  font-family: 'Rubik', 'Heebo', sans-serif;
+  font-family: 'Heebo', sans-serif;
 }
 
 .locationOptions {
@@ -527,13 +569,21 @@
   color: var(--text);
   font-size: 14px;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: transform var(--duration-fast) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out),
+              background var(--duration-normal) var(--ease-out);
   font-family: inherit;
 }
 
-.locationOption:hover {
-  border-color: rgba(200, 155, 60, 0.2);
-  background: rgba(200, 155, 60, 0.04);
+.locationOption:active {
+  transform: scale(0.98);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .locationOption:hover {
+    border-color: rgba(200, 155, 60, 0.2);
+    background: rgba(200, 155, 60, 0.04);
+  }
 }
 
 .locationOptionIcon {
@@ -570,22 +620,22 @@
 /* ─── CATEGORY CHIPS ─── */
 .categorySection {
   position: sticky;
-  top: 80px; /* Below the header */
+  top: 72px;
   z-index: 30;
-  padding: 16px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  background: rgba(11, 11, 11, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  margin-bottom: 8px;
+  padding: 12px 0 0;
+  background: var(--bg);
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .categoryScroll {
   display: flex;
   overflow-x: auto;
-  gap: 8px;
-  padding: 4px 16px;
+  gap: 6px;
+  padding: 8px 16px 12px;
   scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to left, transparent 0%, #000 5%, #000 95%, transparent 100%);
+  mask-image: linear-gradient(to left, transparent 0%, #000 5%, #000 95%, transparent 100%);
 }
 
 .categoryScroll::-webkit-scrollbar {
@@ -596,35 +646,51 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 42px;
-  padding: 0 18px;
+  height: 36px;
+  padding: 0 16px;
   flex-shrink: 0;
-  border-radius: 100px;
-  background: var(--card-soft);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  color: var(--text);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  border: none;
+  color: var(--muted);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s var(--ease-spring);
-  font-family: inherit;
+  transition: transform var(--duration-fast) var(--ease-out),
+              background var(--duration-normal) var(--ease-out),
+              color var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out);
+  font-family: 'Heebo', sans-serif;
   white-space: nowrap;
+  letter-spacing: 0.1px;
 }
 
-.categoryChip:hover {
-  border-color: rgba(200, 155, 60, 0.15);
-  color: var(--gold);
+.categoryChip:active {
+  transform: scale(0.95);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .categoryChip:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.07);
+  }
 }
 
 .activeCategoryChip {
-  background: var(--gold);
-  border: 1px solid var(--gold);
-  color: #0B0B0B;
-  font-weight: 800;
+  background: var(--gold) !important;
+  border: none;
+  color: #0B0B0A !important;
+  font-weight: 700;
+  box-shadow: 0 2px 12px rgba(200, 155, 60, 0.3);
+  opacity: 1 !important;
 }
 
-.activeCategoryChip:hover {
-  color: #0B0B0B;
+@media (hover: hover) and (pointer: fine) {
+  .activeCategoryChip:hover {
+    color: #0B0B0A !important;
+    background: var(--gold) !important;
+    filter: brightness(1.06);
+  }
 }
 
 /* Legacy category classes */
@@ -652,15 +718,15 @@
 .sectionHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 32px 16px 16px;
+  align-items: flex-end;
+  padding: 32px 20px 16px;
 }
 
 .sectionSubtitle {
   font-size: 12px;
   color: var(--muted);
   font-weight: 500;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .seeAllBtn {
@@ -693,10 +759,25 @@
 
 .recTitle {
   margin: 0;
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 21px;
+  font-weight: 700;
   color: var(--text);
-  font-family: 'Rubik', 'Heebo', 'Montserrat', sans-serif;
+  font-family: 'Playfair Display', 'Heebo', serif;
+  letter-spacing: -0.2px;
+  line-height: 1.15;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.recTitle::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 28px;
+  height: 2px;
+  background: var(--gold);
+  border-radius: 2px;
 }
 
 .recGrid {
@@ -713,16 +794,24 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: all 0.35s var(--ease-spring);
+  transition: transform var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out);
   cursor: pointer;
-  animation: cardEntrance 0.5s var(--ease-smooth) both;
+  animation: cardEntrance 0.35s var(--ease-out) both;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
-.recCard:hover {
-  border-color: rgba(200, 155, 60, 0.15);
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+.recCard:active {
+  transform: scale(0.98);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .recCard:hover {
+    border-color: rgba(200, 155, 60, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
 }
 
 .cardImgWrap {
@@ -829,42 +918,45 @@
   width: 30px;
   height: 30px;
   border-radius: var(--radius-sm);
-  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  background: var(--gold);
   border: none;
   color: #0d0d0d;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(200, 155, 60, 0.25);
+  transition: transform var(--duration-fast) var(--ease-out),
+              filter var(--duration-normal) var(--ease-out);
+  box-shadow: 0 2px 8px rgba(200, 155, 60, 0.3);
 }
 
-.cardAddBtn:hover {
-  filter: brightness(1.08);
-  transform: scale(1.05);
+@media (hover: hover) and (pointer: fine) {
+  .cardAddBtn:hover {
+    filter: brightness(1.1);
+    transform: scale(1.04);
+  }
 }
 
 .cardAddBtn:active {
-  transform: scale(0.95);
+  transform: scale(0.92);
 }
 
 /* Details button (menu mode) — clean, minimal */
 .cardDetailsBtn {
   padding: 5px 14px;
-  border-radius: 8px;
-  background: none;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
   color: var(--muted);
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-family: inherit;
+  font-family: 'Heebo', sans-serif;
 }
 
 .cardDetailsBtn:hover {
-  border-color: rgba(200, 155, 60, 0.2);
+  background: rgba(255, 255, 255, 0.09);
   color: var(--text);
 }
 
@@ -937,52 +1029,64 @@
 
 /* ─── FULL MENU SECTION ─── */
 .menuSection {
-  padding-bottom: 16px;
+  padding-bottom: 24px;
 }
 
 .menuGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 14px;
   padding: 0 16px;
 }
 
 .menuCard {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 22px;
+  background: linear-gradient(165deg, #161616 0%, #111111 60%, #0f0f0f 100%);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  transition: all 0.3s var(--ease-spring);
-  animation: cardEntrance 0.45s var(--ease-smooth) both;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: transform var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out);
+  animation: cardEntrance 0.35s var(--ease-out) both;
+  box-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.35),
+    0 1px 3px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
-.menuCard:hover {
-  border-color: rgba(200, 155, 60, 0.15);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+.menuCard:active {
+  transform: scale(0.98);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menuCard:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 8px 28px rgba(0, 0, 0, 0.45),
+      0 2px 8px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
 }
 
 .menuCardImgWrap {
   position: relative;
   width: 100%;
-  height: 130px;
+  height: 155px;
   overflow: hidden;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .menuCardImg {
-  height: 130px;
+  height: 155px;
   width: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s var(--ease-out);
 }
 
-.menuCard:hover .menuCardImg {
-  transform: scale(1.04);
+@media (hover: hover) and (pointer: fine) {
+  .menuCard:hover .menuCardImg {
+    transform: scale(1.04);
+  }
 }
 
 .menuCardImgGradient {
@@ -991,58 +1095,60 @@
   left: 0;
   right: 0;
   height: 50%;
-  background: linear-gradient(to top, var(--card), transparent);
+  background: linear-gradient(to top, #131313, transparent);
+  pointer-events: none;
 }
 
 .recBadge {
   position: absolute;
   top: 8px;
   right: 8px;
-  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  background: var(--gold);
   color: #0d0d0d;
-  font-size: 10px;
-  font-weight: 800;
-  padding: 3px 10px;
-  border-radius: 20px;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
   z-index: 2;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  letter-spacing: 0.3px;
 }
 
 .menuCardBody {
-  padding: 10px 14px 14px;
+  padding: 12px 14px 16px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   flex: 1;
 }
 
 .menuCardTitle {
   margin: 0;
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  color: #f5f5f5;
   line-height: 1.2;
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  font-family: 'Heebo', sans-serif;
+  letter-spacing: -0.1px;
 }
 
 .menuCardDesc {
-  margin: 0;
-  font-size: 10.5px;
-  color: var(--muted);
-  line-height: 1.4;
+  margin: 2px 0 0 0;
+  font-size: 11px;
+  color: #808080;
+  line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: 0;
 }
 
 .menuCardFooter {
   margin-top: auto;
-  padding-top: 8px;
+  padding-top: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1050,8 +1156,9 @@
 
 .menuCardPrice {
   font-size: 15px;
-  font-weight: 900;
-  color: var(--gold);
+  font-weight: 800;
+  color: var(--gold-light);
+  letter-spacing: 0.1px;
 }
 
 /* ─── SUBTLE WHATSAPP FAB ─── */
@@ -1118,6 +1225,10 @@
   }
 
   .heroBanner {
-    height: 320px;
+    height: 420px;
+  }
+
+  .categorySection {
+    top: 72px;
   }
 }

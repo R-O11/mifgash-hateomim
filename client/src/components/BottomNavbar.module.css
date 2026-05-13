@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════
-   BOTTOM NAVBAR — CINEMATIC GLASSMORPHISM
+   BOTTOM NAVBAR — PREMIUM GLASSMORPHISM
    ═══════════════════════════════════════ */
 
 .wrapper {
@@ -9,29 +9,33 @@
   right: 0;
   z-index: 50;
   padding-bottom: env(safe-area-inset-bottom, 0px);
-  animation: navSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: navSlideUp 0.4s var(--ease-out) forwards;
 }
 
 @keyframes navSlideUp {
-  from { transform: translateY(100%); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 .fade {
-  height: 28px;
-  background: linear-gradient(to top, rgba(10, 10, 10, 1), transparent);
+  height: 36px;
+  background: linear-gradient(to top, rgba(11, 11, 11, 0.9), transparent);
   pointer-events: none;
 }
 
 .bar {
-  background: rgba(10, 10, 10, 0.92);
-  backdrop-filter: blur(28px) saturate(1.6);
-  -webkit-backdrop-filter: blur(28px) saturate(1.6);
-  border-top: 1px solid rgba(201, 168, 76, 0.08);
+  background: rgba(11, 11, 11, 0.82);
+  backdrop-filter: blur(32px) saturate(1.5);
+  -webkit-backdrop-filter: blur(32px) saturate(1.5);
+  border-top: 0.5px solid rgba(255, 255, 255, 0.05);
   padding: 0 0.25rem;
   box-shadow:
-    0 -8px 40px rgba(0, 0, 0, 0.6),
-    0 -1px 0 rgba(255, 255, 255, 0.03);
+    0 -6px 32px rgba(0, 0, 0, 0.4),
+    0 -1px 0 rgba(255, 255, 255, 0.02);
 }
 
 .inner {
@@ -42,7 +46,7 @@
   margin: 0 auto;
 }
 
-/* ── Nav Item ── */
+/* ── Nav Item — tactile press, no bounce ── */
 .navItem {
   display: flex;
   flex-direction: column;
@@ -51,7 +55,7 @@
   gap: 3px;
   flex: 1;
   height: 100%;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform var(--duration-fast) var(--ease-out);
   background: none;
   border: none;
   cursor: pointer;
@@ -59,7 +63,9 @@
   padding: 0;
 }
 
-.navItem:active { transform: scale(0.85); }
+.navItem:active {
+  transform: scale(0.92);
+}
 
 .navItemActive {
   transform: translateY(-1px);
@@ -73,42 +79,50 @@
   width: 32px;
   height: 32px;
   border-radius: 10px;
-  transition: all 0.3s ease;
+  transition: background var(--duration-normal) var(--ease-out);
 }
 
 .navItemActive .iconWrap {
   background: rgba(201, 168, 76, 0.1);
 }
 
-/* Animated gold top indicator bar */
+/* Gold top indicator — calm width transition */
 .indicator {
   position: absolute;
   top: 0;
   width: 20px;
-  height: 2.5px;
+  height: 2px;
   background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
   border-radius: 0 0 4px 4px;
-  animation: indicatorSlide 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  box-shadow: 0 0 12px rgba(201, 168, 76, 0.6);
+  animation: indicatorReveal var(--duration-normal) var(--ease-out) forwards;
+  box-shadow: 0 0 10px rgba(201, 168, 76, 0.4);
 }
 
-@keyframes indicatorSlide {
-  from { width: 0; opacity: 0; }
-  to { width: 20px; opacity: 1; }
+@keyframes indicatorReveal {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
 }
 
 .iconActive {
   color: var(--gold);
-  filter: drop-shadow(0 0 8px rgba(201, 168, 76, 0.5));
+  filter: drop-shadow(0 0 6px rgba(201, 168, 76, 0.35));
 }
 
 .iconInactive {
   color: var(--text-muted);
-  transition: color 0.2s ease;
+  transition: color var(--duration-normal) var(--ease-out);
 }
 
-.navItem:hover .iconInactive {
-  color: var(--text-secondary);
+@media (hover: hover) and (pointer: fine) {
+  .navItem:hover .iconInactive {
+    color: var(--text-secondary);
+  }
 }
 
 .labelActive {
@@ -122,14 +136,16 @@
   font-size: 9.5px;
   font-weight: 500;
   color: var(--text-muted);
-  transition: color 0.2s ease;
+  transition: color var(--duration-normal) var(--ease-out);
 }
 
-.navItem:hover .labelInactive {
-  color: var(--text-secondary);
+@media (hover: hover) and (pointer: fine) {
+  .navItem:hover .labelInactive {
+    color: var(--text-secondary);
+  }
 }
 
-/* ── Cart Center Button ── */
+/* ── Cart Center Button — refined press feedback ── */
 .cartWrapper {
   flex: 1;
   display: flex;
@@ -155,14 +171,15 @@
     0 8px 28px rgba(0, 0, 0, 0.6),
     0 0 0 1px rgba(201, 168, 76, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out);
   border: none;
   cursor: pointer;
   color: var(--gold);
 }
 
 .cartButtonHasItems {
-  animation: pulseGlow 2s ease-in-out infinite;
+  animation: pulseGlow 2.5s ease-in-out infinite;
   box-shadow:
     0 8px 28px rgba(0, 0, 0, 0.6),
     0 0 0 1px rgba(201, 168, 76, 0.3),
@@ -171,29 +188,35 @@
 }
 
 @keyframes pulseGlow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow:
       0 8px 28px rgba(0, 0, 0, 0.6),
       0 0 0 1px rgba(201, 168, 76, 0.3),
-      0 0 16px rgba(201, 168, 76, 0.1),
+      0 0 16px rgba(201, 168, 76, 0.08),
       inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
   50% {
     box-shadow:
       0 8px 28px rgba(0, 0, 0, 0.6),
       0 0 0 1px rgba(201, 168, 76, 0.5),
-      0 0 28px rgba(201, 168, 76, 0.25),
+      0 0 24px rgba(201, 168, 76, 0.18),
       inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 }
 
-.cartButton:active { transform: scale(0.88); }
-.cartButton:hover {
-  background: linear-gradient(145deg, #222222, #1a1a1a);
-  box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.7),
-    0 0 0 1px rgba(201, 168, 76, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+.cartButton:active {
+  transform: scale(0.93);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cartButton:hover {
+    background: linear-gradient(145deg, #222222, #1a1a1a);
+    box-shadow:
+      0 12px 32px rgba(0, 0, 0, 0.7),
+      0 0 0 1px rgba(201, 168, 76, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
 }
 
 /* Phone call center button (menu mode) */
@@ -206,8 +229,10 @@
   text-decoration: none;
 }
 
-.phoneCenter:hover {
-  filter: brightness(1.08);
+@media (hover: hover) and (pointer: fine) {
+  .phoneCenter:hover {
+    filter: brightness(1.08);
+  }
 }
 
 /* Legacy — keep for ordering mode */
@@ -232,12 +257,19 @@
   border-radius: 50%;
   border: 2.5px solid #0d0d0d;
   box-shadow: 0 2px 8px rgba(201, 168, 76, 0.5);
-  animation: badgePop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* Start from scale(0.9) not 0 — nothing appears from nothing */
+  animation: badgePop var(--duration-normal) var(--ease-out);
 }
 
 @keyframes badgePop {
-  from { transform: scale(0); }
-  to { transform: scale(1); }
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .cartLabel {
@@ -248,5 +280,7 @@
 }
 
 @media (min-width: 640px) {
-  .wrapper { display: none; }
+  .wrapper {
+    display: none;
+  }
 }

@@ -134,9 +134,13 @@ const ProductModal = ({ productId, onClose }) => {
         {/* Hero Image */}
         <div className={s.heroWrap}>
           <img src={imgSrc} className={s.heroImg} alt={t(product, 'name')} />
+          {/* Cinematic gradient: image bleeds warmly into content */}
+          <div className={s.heroFade} />
+          {/* Atmospheric vignette */}
+          <div className={s.heroVignette} />
           <div className={s.heroControls}>
             <button onClick={onClose} className={s.controlBtn}>
-              <X size={20} strokeWidth={2.5} />
+              <X size={18} strokeWidth={2} />
             </button>
             {/* Hide heart in menu mode */}
             {!menuMode && (
@@ -144,7 +148,7 @@ const ProductModal = ({ productId, onClose }) => {
                 className={`${s.controlBtn} ${favorited ? s.heartActive : ''} ${heartAnimating ? s.heartAnimating : ''}`}
                 onClick={handleFavoriteToggle}
               >
-                <Heart size={20} strokeWidth={2} fill={favorited ? 'currentColor' : 'none'} />
+                <Heart size={18} strokeWidth={2} fill={favorited ? 'currentColor' : 'none'} />
               </button>
             )}
           </div>
@@ -229,8 +233,8 @@ const ProductModal = ({ productId, onClose }) => {
                 />
               </div>
             )}
-          </div>
-        </div>
+          </div>{/* end optionsWrap */}
+        </div>{/* end body */}
 
         {/* Footer */}
         <div className={s.footer}>
@@ -240,26 +244,23 @@ const ProductModal = ({ productId, onClose }) => {
             /* Menu mode: Phone order button */
             <div className={s.addBtnWrap}>
               <a href={`tel:${PHONE_NUMBER}`} className={s.addBtn} style={{ textDecoration: 'none' }}>
-                <Phone size={18} />
                 <span>{lang === 'he' ? 'התקשר להזמנה' : 'اتصل للطلب'}</span>
                 <span className={s.addBtnPrice}>₪{Number(product.base_price).toFixed(0)}</span>
               </a>
             </div>
           ) : (
-            /* Ordering mode: quantity + add to cart */
-            <>
-              <div className={s.qtyControlWrapper}>
-                <div className={s.qtyControl}>
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className={s.qtyBtn}>
-                    <Minus size={18} strokeWidth={2.5} />
-                  </button>
-                  <span className={s.qtyValue}>{quantity}</span>
-                  <button onClick={() => setQuantity(quantity + 1)} className={s.qtyBtn}>
-                    <Plus size={18} strokeWidth={2.5} />
-                  </button>
-                </div>
+            /* Ordering mode: qty and add on same row */
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <div className={s.qtyControl}>
+                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className={s.qtyBtn}>
+                  <Minus size={16} strokeWidth={2.5} />
+                </button>
+                <span className={s.qtyValue}>{quantity}</span>
+                <button onClick={() => setQuantity(quantity + 1)} className={s.qtyBtn}>
+                  <Plus size={16} strokeWidth={2.5} />
+                </button>
               </div>
-              <div className={s.addBtnWrap}>
+              <div className={s.addBtnWrap} style={{ flex: 1 }}>
                 <button onClick={handleAdd} disabled={!isSelectionValid()} className={s.addBtn}>
                   <span>{lang === 'he' ? 'הוסף לסל' : 'أضف للسلة'}</span>
                   <span className={`${s.addBtnPrice} ${isPriceUpdating ? s.priceUpdated : ''}`}>
@@ -267,7 +268,7 @@ const ProductModal = ({ productId, onClose }) => {
                   </span>
                 </button>
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
