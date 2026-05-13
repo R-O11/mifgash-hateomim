@@ -85,8 +85,9 @@ const AdminProductForm = () => {
           setOptionGroups(formattedGroups);
 
         } else {
-           if (catRes.data.length > 0) {
-             setFormData(prev => ({ ...prev, category_id: catRes.data[0].id }));
+           const catArray = catRes.data?.data || catRes.data;
+           if (catArray && catArray.length > 0) {
+             setFormData(prev => ({ ...prev, category_id: catArray[0].id }));
            }
         }
       } catch (err) {

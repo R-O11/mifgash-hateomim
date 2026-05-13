@@ -65,26 +65,25 @@
   display: block;
 }
 
-/* Cinematic gradient: image bleeds into content */
+/* Subtle bottom fade — text readability only, food stays sharp */
 .heroFade {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 60%;
+  height: 32%;
   background: linear-gradient(to top,
-      #111009 0%,
-      rgba(17, 16, 9, 0.85) 35%,
-      rgba(17, 16, 9, 0.4) 65%,
+      rgba(17, 16, 9, 0.65) 0%,
+      rgba(17, 16, 9, 0.25) 50%,
       transparent 100%);
   pointer-events: none;
 }
 
-/* Atmospheric vignette for depth */
+/* Subtle atmospheric depth — not a blackout */
 .heroVignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 70% 30%, transparent 40%, rgba(0, 0, 0, 0.45) 100%);
+  background: radial-gradient(ellipse at 70% 30%, transparent 45%, rgba(0, 0, 0, 0.22) 100%);
   pointer-events: none;
 }
 

@@ -227,7 +227,7 @@ const createProduct = async (req, res, next) => {
     const activeVal = !(is_active === 'false' || is_active === false);
     const availVal = !(is_available === 'false' || is_available === false);
     const recommVal = (is_recommended === 'true' || is_recommended === true || is_recommended === 1 || is_recommended === '1');
-    const prepTimeVal = prep_time_minutes ? parseInt(prep_time_minutes, 10) : null;
+    const prepTimeVal = prep_time_minutes ? parseInt(prep_time_minutes, 10) : 15;
 
     const [result] = await pool.query(
       `INSERT INTO products 
@@ -263,7 +263,7 @@ const updateProduct = async (req, res, next) => {
     const activeVal = !(is_active === 'false' || is_active === false || is_active === 0 || is_active === '0');
     const availVal = !(is_available === 'false' || is_available === false || is_available === 0 || is_available === '0');
     const recommVal = (is_recommended === 'true' || is_recommended === true || is_recommended === 1 || is_recommended === '1');
-    const prepTimeVal = prep_time_minutes ? parseInt(prep_time_minutes, 10) : null;
+    const prepTimeVal = prep_time_minutes ? parseInt(prep_time_minutes, 10) : 15;
 
     if (image_url !== undefined) {
       await pool.query(

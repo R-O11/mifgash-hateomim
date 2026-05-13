@@ -241,8 +241,8 @@ const Home = () => {
               <div className={s.heroVignette} />
               <div className={s.heroGradient} />
 
-              {/* New Status Badge */}
-              <div className={s.heroStatusTopBadge}>
+              {/* Status Pill */}
+              <div className={`${s.heroStatusPill} ${isOpen ? s.heroStatusPillOpen : s.heroStatusPillClosed}`}>
                 <div className={`${s.statusDotLive} ${isOpen ? s.statusDotOpen : s.statusDotClosed}`} />
                 <span>{isOpen ? (lang === 'he' ? 'פתוח עכשיו' : 'مفتوح الآن') : (lang === 'he' ? 'סגור עכשיו' : 'مغلق الآن')}</span>
               </div>
@@ -259,9 +259,15 @@ const Home = () => {
                     (lang === 'he' ? hero.desc_he : hero.desc_ar)}
                 </p>
                 <div className={s.heroButtons}>
-                  <a href={`tel:${data.status.phone_number || '0501234567'}`} className={s.heroCta}>
+                  <a
+                    href={`tel:${data.status.phone_number || '0501234567'}`}
+                    className={isOpen ? s.heroCta : s.heroCtaClosed}
+                  >
                     <Phone size={16} />
-                    {lang === 'he' ? 'התקשר להזמנה' : 'اتصل للطلب'}
+                    {isOpen
+                      ? (lang === 'he' ? 'התקשר להזמנה' : 'اتصل للطلب')
+                      : (lang === 'he' ? 'התקשר לבירור' : 'اتصل للاستفسار')
+                    }
                   </a>
                 </div>
               </div>
